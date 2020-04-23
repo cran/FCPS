@@ -1,13 +1,18 @@
-ClusterDistances=function(FullDistanceMatrix,Cls,Names,PlotIt=FALSE){
+ClusterDistances=IntraClusterDistances=ClusterIntraDistances=function(FullDistanceMatrix,Cls,Names,PlotIt=FALSE){
   if(missing(Cls)){
     Cls=rep(1,nrow(FullDistanceMatrix))
   }
+  if(!is.vector(Cls)){
+    warning('ClusterDistances: Cls is not a vector. Calling as.numeric(as.character(Cls))')
+    Cls=as.numeric(as.character(Cls))
+  }
+  
   if(nrow(FullDistanceMatrix)!=length(Cls)){
-	stop('Dimensionality of Distance Matrix "FullDistanceMatrix" is not consistent with "Cls" classification vector')
+	stop('ClusterDistances: Dimensionality of Distance Matrix "FullDistanceMatrix" is not consistent with "Cls" classification vector')
   }
   
   if(!isSymmetric(unname(FullDistanceMatrix))){
-	stop('Distance Matrix "FullDistanceMatrix" is not symmetric. Please check this, e.g. DataVisualizations::Pixelmatrix.')
+	stop('ClusterDistances: Distance Matrix "FullDistanceMatrix" is not symmetric. Please check this, e.g. DataVisualizations::Pixelmatrix.')
   }
   u=sort(unique(Cls))
 
@@ -19,30 +24,25 @@ ClusterDistances=function(FullDistanceMatrix,Cls,Names,PlotIt=FALSE){
     distvec=classdistcur[upper.tri(classdistcur,diag = F)]
     classdist=c(classdist,list(distvec))
   }
-  #addcols=function(...){
-  #  return(rowr::cbind.fill(...,fill = NaN))
-  #}
-  
-  # if(PlotIt){
-  #   ggobject=MDplot4multiplevectors(unlist(classdist))$ggplotObj
-  #   xmat=do.call(addcols,classdist)
-  #   colnames(xmat)=c('Full',paste0('Class',u))
-  #   print(ggobject)
-  #   return(list(ClusterDists=as.matrix(xmat),ggobject=ggobject))
-  # 
-  # }
-    xmat=do.call(DataVisualizations::CombineCols,classdist)
-    
+
+    Intraclusterdistances=do.call(DataVisualizations::CombineCols,classdist)
+    Intraclusterdistances=as.matrix(Intraclusterdistances)
     if(missing(Names)){
-      colnames(xmat)=c('Full',paste0('Class',u))
+      colnames(Intraclusterdistances)=c('Full',paste0('Cluster',u))
     }else{
       if(length(u)!=length(Names)){
-        warning('Lengh of Names has to be equal of length of unique Cls.')
-        colnames(xmat)=c('Full',paste0('Class',Names))
+        warning('ClusterDistances: Lengh of Names has to be equal of length of unique Cls.')
+        colnames(Intraclusterdistances)=c('Full',paste0('Cluster',Names))
       }else{
-        colnames(xmat)=c('Full',Names)
+        colnames(Intraclusterdistances)=c('Full',Names)
       }
     }
+    
+    if(PlotIt){
+      ggobject=DataVisualizations::MDplot(Intraclusterdistances,OnlyPlotOutput = TRUE)
+      print(ggobject)
+      return(list(ClusterDists=as.matrix(Intraclusterdistances),ggobject=ggobject))
+    }
 
-  return(as.matrix(xmat))
+  return(Intraclusterdistances)
 }

@@ -10,9 +10,8 @@ Spectrum=function(Data,Method=2,ClusterNo=NULL,PlotIt=FALSE,Silent=TRUE,PlotResu
   
   
   if(PlotIt){
-    requireNamespace('DataVisualizations')
-    print(DataVisualizations::Plot3D(Data,Cls))
+    ClusterPlotMDS(Data,Cls)
   }
-  
+  Cls=ClusterRename(Cls,Data)
   return(list(Cls=Cls,Object=out))
 }

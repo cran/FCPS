@@ -1,5 +1,5 @@
-\name{Clusternumbers}
-\alias{Clusternumbers}
+\name{ClusterNoEstimation}
+\alias{ClusterNoEstimation}
 \title{
 Estimates Number of Clusters using up to 26 Indicators
 }
@@ -10,7 +10,7 @@ For a given dataset and clusterings for this dataset, key indicators mentioned i
 An alternative estimation of the cluster number can be done by counting the valleys of the topographic map of the generalized U-Matrix for a specfic projection method using the \pkg{ProjectionBasesdClustering} and \pkg{GeneralizedUmatrix} packages on CRAN, see [Thrun/Ultsch, 2020] for details.
 }
 \usage{
-Clusternumbers(Data, ClsMatrix = NULL, max.nc, 
+ClusterNoEstimation(Data, ClsMatrix = NULL, max.nc, 
 
 index = "all", min.nc = 2,
 
@@ -57,11 +57,11 @@ If you enter 'all', all key figures are calculated.
 
 (2)
 
-The codes kl, duda, pseudot2, beale, frey and mcclain require a clustering for max.nc+1 classes. If these key figures are to be calculated, this clustering must be specified in cls.
+The indicators kl, duda, pseudot2, beale, frey and mcclain require a clustering for max.nc+1 classes. If these key figures are to be calculated, this clustering must be specified in cls.
 
 (3)
 
-The code kl requires a clustering for min.nc-1 classes. If this key figure is to be calculated, this clustering must also be specified in cls. For the case min.nc = 2 no clustering for 1 has to be given.
+The indicator kl requires a clustering for min.nc-1 classes. If this key figure is to be calculated, this clustering must also be specified in cls. For the case min.nc = 2 no clustering for 1 has to be given.
 
 (4)
 
@@ -118,9 +118,9 @@ for (i in 2:8) {
 }
 
 # Calculation of all indicators and recommendations for the number of classes
-indicatorsList=Clusternumbers(Data = data, ClsMatrix = clsm, max.nc = 7)
+indicatorsList=ClusterNoEstimation(Data = data, ClsMatrix = clsm, max.nc = 7)
 
 # Alternatively, the same calculation as above can be executed with the following call
-Clusternumbers(Data = data, max.nc = 7, method = "complete")
+ClusterNoEstimation(Data = data, max.nc = 7, method = "complete")
 #In this variant, the function clusterumbers also takes over the clustering
 }

@@ -95,6 +95,7 @@ m=paste(method,"LinkCluster/ ",DistanceMethod," N=",nrow(as.matrix(Data)))
 # Classification or Dendrogram
 if (ClusterNo>0){
   Cls=cutree(hc,ClusterNo)
+   Cls=ClusterRename(Cls,Data)
   return(list(Cls=Cls,Dedrogram=as.dendrogram(hc)))
 } 
 else{

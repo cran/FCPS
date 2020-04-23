@@ -11,12 +11,14 @@ A dataset has a high probabilty to posses cluster structures, if the first compo
 An alternative investigation of clusterability can be performed by inspecting the topographic map of the Generalized U-Matrix for a specfic projection method using the \pkg{ProjectionBasesdClustering} and \pkg{GeneralizedUmatrix} packages on CRAN, see [Thrun/Ultsch, 2020] for details.
 }
 \usage{
-ClusterabilityMDplot(Data,Method)
+ClusterabilityMDplot(DataOrDistance,Method,na.rm=FALSE)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{Data}{
-  einer one datasets [1:n,1:d] of n cases and d features or multiple data sets in a list
+  \item{DataOrDistance}{
+  einer one datasets [1:n,1:d] of n cases and d features or  or symmetric distance matrix [1:d,1:d] 
+  
+  or multiple data sets or distances in a list
 }
   \item{Method}{
   "none" performs no dimension reduction.
@@ -25,9 +27,10 @@ ClusterabilityMDplot(Data,Method)
   
   "distance" computes pairwise distances (using distance_metric as the metric).
 }
+  \item{na.rm}{statistical testing will not work with mssing values, if TRUE values are imputed with aveages}
 }
 \details{
-Uses the method of [Adolfsson et al., 2019] sepecified as pca plus dip-test (PCA dip).
+Uses the method of [Adolfsson et al., 2019] sepecified as pca plus dip-test (PCA dip) per default.
 
 If list is named, than the names of the list will be used and the MDplots will be re-ordered according to multimodality in the plot, otherwise only the pvalues of [Adolfsson et al., 2019] will be the names and the ordering of the MDplots is the same as the of the list.
 
@@ -85,9 +88,14 @@ DataV = list(
 \donttest{ClusterabilityMDplot(DataV)}
 
 \dontshow{
-ClusterabilityMDplot(DataV[[3:4]])
+#ClusterabilityMDplot(DataV[3:4])
 }
 }
 
+\seealso{
+\code{\link[DataVisualizations]{MDplot}}
+}
+
+\note{Imputation does not work for distance matrices. Imputation is still experimental. It is adviced to impute missing values before using this function}
 \keyword{Clusterability}% use one of  RShowDoc("KEYWORDS")
 \keyword{MDplot}% __ONLY ONE__ keyword per line

@@ -1,4 +1,4 @@
-InterClusterDistances=function(FullDistanceMatrix,Cls,Names,PlotIt=FALSE){
+ClusterInterDistances=InterClusterDistances=function(FullDistanceMatrix,Cls,Names,PlotIt=FALSE){
   u=sort(unique(Cls))
   classdist=list(FullDistanceMatrix[upper.tri(FullDistanceMatrix,diag = F)])
   if(length(u)==1) return(unlist(classdist))
@@ -9,21 +9,25 @@ InterClusterDistances=function(FullDistanceMatrix,Cls,Names,PlotIt=FALSE){
     distvec=classdistcur[upper.tri(classdistcur,diag = F)]
     classdist=c(classdist,list(distvec))
   }
-  #addcols=function(...){
-  # return(rowr::cbind.fill(...,fill = NaN))
-  #}
   
   xmat=do.call(DataVisualizations::CombineCols,classdist)
   
   if(missing(Names)){
-    colnames(xmat)=c('Full',paste0('Class',u))
+    colnames(xmat)=c('Full',paste0('Cluster',u))
   }else{
     if(length(u)!=length(Names)){
       warning('Lengh of Names has to be equal of length of unique Cls.')
-      colnames(xmat)=c('Full',paste0('Class',Names))
+      colnames(xmat)=c('Full',paste0('Cluster',Names))
     }else{
       colnames(xmat)=c('Full',Names)
     }
   }
+  
+   if(PlotIt){
+      ggobject=DataVisualizations::MDplot(xmat,OnlyPlotOutput = TRUE)
+      print(ggobject)
+      return(list(ClusterDists=as.matrix(xmat),ggobject=ggobject))
+   }
+	
   return(as.matrix(xmat))
 }

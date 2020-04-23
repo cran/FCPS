@@ -1,7 +1,10 @@
 exportPattern("^[[:upper:]]+")
 export(kmeansClustering)
+export(kmeansDist)
 export(pdfClustering)
 import(DataVisualizations)
+
+
 import(ggplot2)
 importFrom('stats', hclust,cutree,kmeans,as.dendrogram,rect.hclust)
 #importFrom('cclust', cclust)
@@ -15,3 +18,4 @@ importFrom("stats","complete.cases", "cov", "dist", "pf","sd", "cutree", "hclust
 importFrom("stats", "as.hclust", "quantile","is.leaf")
   importFrom("utils", "head")
   importFrom("stats", "prcomp", "runif")
+   importFrom("stats", "cor")

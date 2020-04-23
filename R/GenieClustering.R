@@ -16,7 +16,9 @@ GenieClustering=function(DataOrDistances,ClusterNo=0,DistanceMethod="euclidean",
   
   # Classification or Dendrogram
   if (ClusterNo>0){
-    return (cutree(hc,ClusterNo));
+	Cls=cutree(hc,ClusterNo)
+    Cls=ClusterRename(Cls,DataOrDistances)
+    return (Cls);
   } 
   else{
     x=as.dendrogram(hc);plot(x, main=m,xlab="Number of Data Points N", ylab="Distance",sub=" ",leaflab ="none")

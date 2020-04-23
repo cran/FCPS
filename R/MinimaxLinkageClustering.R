@@ -17,7 +17,9 @@ MinimaxLinkageClustering=function(DataOrDistances,ClusterNo=0,DistanceMethod="eu
   # Classification or Dendrogram
   if (ClusterNo>0){
     out=protoclust::protocut(hc,ClusterNo)
-    return (list(Cls=out$cl,Object=out))
+	Cls=out$cl
+	Cls=ClusterRename(Cls,DataOrDistances)
+    return (list(Cls=Cls,Object=out))
   } 
   else{
     x=as.dendrogram(hc);plot(x, main=m,xlab="Number of Data Points N", ylab="Distance",sub=" ",leaflab ="none",...)

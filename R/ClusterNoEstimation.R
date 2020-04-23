@@ -1,4 +1,4 @@
-Clusternumbers <- function (Data,
+ClusterNoEstimation <- function (Data,
                             ClsMatrix = NULL,
                             max.nc,
                             index = 'all',
