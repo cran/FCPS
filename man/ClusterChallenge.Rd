@@ -1,12 +1,11 @@
 \name{ClusterChallenge}
 \alias{ClusterChallenge}
-\alias{GenerateFundamentalClusteringProblem}
-%- Also NEED an '\alias' for EACH other topic documented here.
+
 \title{
 Generates a Fundamental Clustering Challenge based on specific artificial datasets.
 }
 \description{
-Lsun3D and FCPS datasets were introduced in various publications for a specific fixed size. This function generalites them for any sample size.
+Lsun3D and FCPS datasets were introduced in various publications for a specific fixed size. This function generalizes them for any sample size.
 }
 \usage{
 ClusterChallenge(Name,SampleSize,
@@ -27,13 +26,13 @@ Size of Sample higher than 300, preferable above 500
 TRUE: Plots the challenge with \code{\link{ClusterPlotMDS}}
 }
   \item{PointSize}{
-if PlotIt=TRUE: see \code{\link{ClusterPlotMDS}}
+If PlotIt=TRUE: see \code{\link{ClusterPlotMDS}}
 }
   \item{Plotter3D}{
-if PlotIt=TRUE: see \code{\link{ClusterPlotMDS}}
+If PlotIt=TRUE: see \code{\link{ClusterPlotMDS}}
 }
   \item{\dots}{
-if PlotIt=TRUE: further arguments for \code{\link{ClusterPlotMDS}}
+If PlotIt=TRUE: further arguments for \code{\link{ClusterPlotMDS}}
 }
 }
 \details{
@@ -63,7 +62,7 @@ ClusterChallenge("Chainlink",2000,TRUE)
 \seealso{
 \code{\link{ClusterPlotMDS}}
 }
-\keyword{GenerateFundamentalClusteringProblem}% use one of  RShowDoc("KEYWORDS")
+\concept{Generate Fundamental Clustering Problem}
 \keyword{FCPS}% __ONLY ONE__ keyword per line
 \keyword{Clustering}%
-\keyword{ClusterChallenge}%
+\concept{Cluster Challenge}%

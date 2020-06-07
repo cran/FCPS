@@ -2,9 +2,12 @@ SpectralClustering <- function(Data, ClusterNo,PlotIt=FALSE,...){
   #Cls=SpectralClustering(Data,ClusterNo)
   #Cls=SpectralClustering(Data,ClusterNo,...)
   # Clusters the Data into "ClusterNo" different clusters using the Spectal Clustering Method
+  # 
   # INPUT
   # Data(1:n,1:m)           Data to be clustered. n Datapoints with m Attributes
   # ClusterNo    Number of different Clusters to build
+  #
+  # OPTIONAL
   # kernel		              Kernelmethod, possible options:
   #                         default:        unknown!, maybe kernel="rbfdot"
   #                         rbfdot          Radial Basis kernel function "Gaussian"
@@ -33,9 +36,10 @@ SpectralClustering <- function(Data, ClusterNo,PlotIt=FALSE,...){
   #                 mod.sample proportion of data to use when estimating sigma #                 (default: 0.75)
   #                 na.action	the action to perform on NA
   # OUTPUT
-  # cls[1:n]  vector of integer
+  # Cls[1:n]    Clustering of data
+  # Object      Object of kernlab::specc algorithm
   #
-  #author: MT 04/2018 (redone from new)
+  # Author: MT 04/2018 (redone from new)
   #
   # NOTA
   # see http://artax.karlin.mff.cuni.cz/r-help/library/kernlab/html/specc.html
@@ -50,8 +54,20 @@ SpectralClustering <- function(Data, ClusterNo,PlotIt=FALSE,...){
  #   library(kernlab)
 #  }
   #SpectralClustering <- function(Data, ClusterNo=2,kernel = "rbfdot", kpar="automatic",nystrom.red=F,nystrom.sample = dim(Data)[1]/6,iterations = 200,mod.sample = 0.75, na.action = na.omit,...){
-  
-	requireNamespace('kernlab')
+  if (!requireNamespace('kernlab')) {
+    message(
+      'Subordinate clustering package is missing. No computations are performed.
+            Please install the package which is defined in "Suggests".'
+    )
+    return(
+      list(
+        Cls = rep(1, nrow(Data)),
+        Object = "Subordinate clustering package is missing.
+                Please install the package which is defined in 'Suggests'."
+      )
+    )
+  }
+
 	sc=kernlab::specc(Data, centers=ClusterNo,...)
   #cls <- matrix(kernlab::specc(Data, centers=K,...))
 	Cls=sc@.Data

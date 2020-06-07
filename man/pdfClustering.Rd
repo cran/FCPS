@@ -5,15 +5,15 @@
 Probability Density Distribution Clustering
 }
 \description{
-Clustering via nonparametric density estimation
+Clustering via non parametric density estimation
 }
 \usage{
 pdfClustering(Data, PlotIt = FALSE, ...)
 }
-%- maybe also 'usage' for other objects documented here.
+
 \arguments{
-\item{Data}{[1:n,1:d] matrix of dataset to be clustered. It consists of n cases or d-dimensional data points. Every case has d attributes, variables or features.}
-\item{PlotIt}{default: FALSE, If TRUE plots the first three dimensions of the dataset with colored three-dimensional data points defined by the clustering stored in \code{Cls}}
+\item{Data}{[1:n,1:d] matrix of dataset to be clustered. It consists of n cases of d-dimensional data points. Every case has d attributes, variables or features.}
+\item{PlotIt}{Default: FALSE, if TRUE plots the first three dimensions of the dataset with colored three-dimensional data points defined by the clustering stored in \code{Cls}}
 \item{\dots}{Further arguments to be set for the clustering algorithm, if not set, default arguments are used.}
 
 }
@@ -40,7 +40,5 @@ Michael Thrun
 data('Hepta')
 out=pdfClustering(Hepta$Data,PlotIt=FALSE)
 }
-% Add one or more standard keywords, see file 'KEYWORDS' in the
-% R documentation directory.
-\keyword{pdfClustering}% use one of  RShowDoc("KEYWORDS")
-\keyword{Clustering via nonparametric density estimation}% __ONLY ONE__ keyword per line
+\keyword{pdfClustering}
+\keyword{Clustering}

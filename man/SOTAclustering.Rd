@@ -10,10 +10,10 @@ SOTAclustering(Data, ClusterNo,PlotIt=FALSE,UnrestGrowth,...)
 }
 
 \arguments{
-\item{Data}{[1:n,1:d] matrix of dataset to be clustered. It consists of n cases or d-dimensional data points. Every case has d attributes, variables or features.}
+\item{Data}{[1:n,1:d] matrix of dataset to be clustered. It consists of n cases of d-dimensional data points. Every case has d attributes, variables or features.}
 
-\item{ClusterNo}{A number k which defines k different Clusters to be build by the algorithm.}
-\item{PlotIt}{default: FALSE, If TRUE plots the first three dimensions of the dataset with colored three-dimensional data points defined by the clustering stored in \code{Cls}}
+\item{ClusterNo}{A number k which defines k different clusters to be built by the algorithm.}
+\item{PlotIt}{Default: FALSE, if TRUE plots the first three dimensions of the dataset with colored three-dimensional data points defined by the clustering stored in \code{Cls}}
 \item{UnrestGrowth}{
 TRUE: forces the \code{ClusterNo} option to uphold.
 FALSE: enables the algorithm to find its own number of clusters, in this cases ClusterNo should contain a high number because it is internally set as the number of iterations which is either reached or the max diversity criteria is satisfied priorly.
@@ -47,3 +47,5 @@ out=SOTAclustering(Lsun3D$Data,ClusterNo=100,PlotIt=FALSE,UnrestGrowth=FALSE)
 [Herrero et al., 2001]  Herrero, J., Valencia, A., & Dopazo, J.: A hierarchical unsupervised growing neural network for clustering gene expression patterns, Bioinformatics, Vol. 17(2), pp. 126-136. 2001.
 
 }
+\keyword{SOTAclustering}
+\concept{Self-organizing Tree Algorithm}

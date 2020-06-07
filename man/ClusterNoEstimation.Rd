@@ -10,21 +10,26 @@ For a given dataset and clusterings for this dataset, key indicators mentioned i
 An alternative estimation of the cluster number can be done by counting the valleys of the topographic map of the generalized U-Matrix for a specfic projection method using the \pkg{ProjectionBasesdClustering} and \pkg{GeneralizedUmatrix} packages on CRAN, see [Thrun/Ultsch, 2020] for details.
 }
 \usage{
-ClusterNoEstimation(Data, ClsMatrix = NULL, max.nc, 
+ClusterNoEstimation(DataOrDistances, ClsMatrix = NULL, max.nc, 
 
 index = "all", min.nc = 2,
 
-Silent = TRUE, method = NULL, PlotIt=TRUE)
+Silent = TRUE, method = NULL, 
+PlotIt=TRUE,SelectByABC=TRUE,Colorsequence)
 }
 \arguments{
-  \item{Data}{
-    [1:n,1:d] matrix of dataset to be clustered. It consists of n cases or d-dimensional data points. Every case has d attributes, variables or features.
+  \item{DataOrDistances}{
+    Either [1:n,1:d] matrix of dataset to be clustered. It consists of n cases of d-dimensional data points. Every case has d attributes, variables or features.
+    
+    or
+
+Symmetric [1:n,1:n] distance matrix
   }
   \item{ClsMatrix}{
 [1:n,1:(max.nc)] Clustering of the number of classes to be checked as a matrix with one cluster per column (see also details (2) and (3)), must be specified if method = NULL
   }
   \item{max.nc}{
-    highest number of classes to be checked
+    Highest number of classes to be checked
   }
   \item{method}{
     Cluster procedure, with which the clusterings are created (see details (4) for possible methods), must be specified if ClsMatrix = NULL
@@ -34,16 +39,24 @@ Silent = TRUE, method = NULL, PlotIt=TRUE)
  String or vector of strings with the indicators to be calculated (see details (1)), default = "all
   }
   \item{min.nc}{
-   lowest number of classes to be checked, default = 2
+   Lowest number of classes to be checked, default = 2
   }
   \item{Silent}{
-      if TRUE status messages are output, default = FALSE
+      If TRUE status messages are output, default = FALSE
   }
     \item{PlotIt}{
-      if TRUE plots fanplot with proposed cluster numbers
+      If TRUE plots fanplot with proposed cluster numbers
+  }
+      \item{SelectByABC}{
+      If PlotIt=TRUE, TRUE: Plots group A of ABCanalysis of the most important ones (highest overlap in indicators), FALSE: plots all indicators
+  }
+        \item{Colorsequence}{
+    Optional, character vector of sufficient length of colors for the fan plot.If the sequence is too long the first part of the sequence is used.
   }
 }
 \details{
+Each column of \code{ClsMatrix} has to have at least two unqiue clusters defined. Otherwise the function will stop.
+
 (1)
 
 The following 26 indicators can be calculated:
@@ -74,13 +87,14 @@ The following methods can be used to create clusterings:
 
 The indicators duda, pseudot2, beale and frey are only intended for use in hierarchical cluster procedures.
 
+If a distances matrix is given, then \pkg{ProjectionBasedClustering} is required to be accessible.
 }
 \value{
 \item{Indicators}{
-  a table of the calculated indicators except Duda, Pseudot2 and Beale
+  A table of the calculated indicators except Duda, Pseudot2 and Beale
 }
 \item{ClusterNo}{
- the recommended number of clusters for each calculated indicator
+ The recommended number of clusters for each calculated indicator
 }
 \item{ClsMatrix}{
   [1:n,min.nc:(max.nc)] Output of the clusterings used for the calculation
@@ -104,6 +118,8 @@ Peter Nahrgang
 Code of "calinski", "cindex", "db", "hartigan",
 "ratkowsky", "scott", "marriot", "ball", "trcovw", "tracew", "friedman",
 "rubin", "ssi" of package cclust ist adapted for the purpose of this function.
+
+Colorsequence works if \pkg{DataVisualizations} 1.1.13 is installed (currently only on github available).
 }
 \examples{
 # Reading the iris dataset from the standard R-Package datasets
@@ -122,5 +138,7 @@ indicatorsList=ClusterNoEstimation(Data = data, ClsMatrix = clsm, max.nc = 7)
 
 # Alternatively, the same calculation as above can be executed with the following call
 ClusterNoEstimation(Data = data, max.nc = 7, method = "complete")
-#In this variant, the function clusterumbers also takes over the clustering
+# In this variant, the function clusterumbers also takes over the clustering
 }
+\concept{Estimation of Number of Clusters}
+\keyword{ClusterNoEstimation}

@@ -2,7 +2,7 @@
 \alias{ClusterIntraDistances}
 \alias{IntraClusterDistances}
 \alias{ClusterDistances}
-%- Also NEED an '\alias' for EACH other topic documented here.
+
 \title{
 ClusterDistances
 }
@@ -32,7 +32,7 @@ Names, PlotIt = FALSE)
 Cluster distances are given back as a matrix, one column per cluster and the vector of the full distance matrix without the diagonal elements and the upper half of the symmetric matrix.
 }
 \value{
-matrix [1:m,1:(k+1)] of k clusters, each columns consists of the distances in a cluster, filled up with NaN at the end to be of the same lenght as the complete distance matrix.
+Matrix [1:m,1:(k+1)] of k clusters, each columns consists of the distances in a cluster, filled up with NaN at the end to be of the same length as the complete distance matrix.
 }
 \references{
 [Thrun, 2018] Thrun, M.C., Projection Based Clustering through Self-Organization and Swarm Intelligence. 2018, Heidelberg: Springer.
@@ -52,7 +52,7 @@ Distance=as.matrix(dist(Hepta$Data))
 
 interdists=ClusterDistances(Distance,Hepta$Cls)
 }
-% Add one or more standard keywords, see file 'KEYWORDS' in the
-% R documentation directory.
-\keyword{intra-cluster}% use one of  RShowDoc("KEYWORDS")
-\keyword{distances}% __ONLY ONE__ keyword per line
+
+\concept{intra cluster}
+\keyword{distances}
+\keyword{intracluster}

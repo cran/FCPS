@@ -1,11 +1,27 @@
 ClusterPlotMDS=function(DataOrDists,Cls,main='Clustering',method = "euclidean",OutputDimension = 3,PointSize=1,Plotter3D="rgl",...){
-  
+  #
+  # INPUT
+  # DataOrDists        Either nonsymmetric [1:n,1:d] datamatrix of n cases and d features or
+  #                    symmetric [1:n,1:n] distance matrix
+  # Cls                1:n numerical vector of numbers defining the classification as the main
+  #                    output of the clustering algorithm for the n cases of data. It has k unique
+  #                    numbers representing the arbitrary labels of the clustering.
+  # main               String. Title of plot
+  # method             Method to compute distances, default "euclidean"
+  # OutputDimension    Either two or three depending on user choice
+  # PointSize          Size of points l
+  # Plotter3D          In case of 3 dimensions, choose either "plotly" or "rgl"
+  # 
+  # OUTPUT
+  # The rgl plot
+  # 
+  # 
   if(missing(DataOrDists)) stop('DataOrDists is missing.')
 
   if(is.null(DataOrDists)) stop('DataOrDists is missing.')
   
   if(!is.matrix(DataOrDists)){
-    warning('DataOrDists iis not a matrix. Calling as.matrix')
+    warning('DataOrDists is not a matrix. Calling as.matrix')
     DataOrDists=as.matrix(DataOrDists)
   }
   
@@ -31,24 +47,26 @@ ClusterPlotMDS=function(DataOrDists,Cls,main='Clustering',method = "euclidean",O
   }
   
   prepareData=function(DataDists,Cls){
-    if(requireNamespace('MASS')){
-      x=DataDists
-      x[upper.tri(x,diag = T)]=NaN
-      ind=which(x==0,arr.ind = T)
-      if(length(ind)>0){
-        DataDists=DataDists[-ind[,1],-ind[,2]]
-        Cls=Cls[-ind[,1]]
-      }
-      DataMDS = MASS::sammon(d = DataDists, y = cmdscale(d = DataDists, 
-                                                         k = OutputDimension), k = OutputDimension)$points
+    
+      # x=DataDists
+      # x[upper.tri(x,diag = T)]=NaN
+      # ind=which(x==0,arr.ind = T)
+      # if(length(ind)>0){
+      #   DataDists=DataDists[-ind[,1],-ind[,2]]
+      #   Cls=Cls[-ind[,1]]
+      # }
+    if(requireNamespace('smacof')){
+      DataMDS =smacof::mds(DataDists,ndim = 3)$conf
+      # DataMDS = MASS::sammon(d = DataDists, y = cmdscale(d = DataDists, 
+      #                                                    k = OutputDimension), k = OutputDimension)$points
     }else{
       DataMDS = cmdscale(d = DataDists, k = OutputDimension, eig = TRUE, 
                          add = FALSE, x.ret = FALSE)$points
     }
     return(list(DataMDS=DataMDS,Cls=Cls))
-  }#end prepareData
+  }# End prepareData
   
-  if (isSymmetric(DataOrDists)) {
+  if (isSymmetric(unname(DataOrDists))) {
     DataDists = DataOrDists
     AnzVar = ncol(DataOrDists)
     AnzData = nrow(DataOrDists)
@@ -73,13 +91,45 @@ ClusterPlotMDS=function(DataOrDists,Cls,main='Clustering',method = "euclidean",O
     Cls[!is.finite(Cls)]=999
     Colors=DataVisualizations::DefaultColorSequence[-2]#no yellow
     Colors=Colors[1:length(unique(Cls))]
-    if(Plotter3D=="rgl")
-      DataVisualizations::Plot3D(Data = Data,Cls = Cls,UniqueColors = Colors,type="s",size=PointSize,box=F,aspect=T,top=T,main=main,Plotter3D=Plotter3D,...)
-    else
-      DataVisualizations::Plot3D(Data = Data,Cls = Cls,UniqueColors = Colors,size=PointSize,main=main,Plotter3D=Plotter3D,...)
-
+    
+    if(Plotter3D=="rgl"){
+      if(dim(Data)[2]!=2){
+        return(DataVisualizations::Plot3D(Data = Data,
+                                          Cls = Cls,
+                                          UniqueColors = Colors,
+                                          type="s",
+                                          size=PointSize,
+                                          box=F,
+                                          aspect=T,
+                                          top=T,
+                                          main=main,
+                                          Plotter3D=Plotter3D,...))
+      }
+      else{
+        p=DataVisualizations::Plot3D(Data = Data,
+                                     Cls = Cls,
+                                     UniqueColors = Colors,
+                                     size=PointSize,
+                                     Plotter3D=Plotter3D,...)+ggplot2::ggtitle(main)
+        print(p)
+        return(p)
+      }
+  
+    }else{
+      if(dim(Data)[2]!=2){
+        p=DataVisualizations::Plot3D(Data = Data,Cls = Cls,UniqueColors = Colors,size=PointSize,Plotter3D=Plotter3D,...)
+        p=plotly::layout(p,title=main)
+        p
+        return(p)
+      }else{
+        return(DataVisualizations::Plot3D(Data = Data,
+                                          Cls = Cls,
+                                          UniqueColors = Colors,
+                                          size=PointSize,
+                                          Plotter3D=Plotter3D,...)+ggplot2::ggtitle(main))
+      }
+    }
   }else{
     plot(Data[,1],Data[,2],cols=Cls,main = main,...)
   }
-
 }

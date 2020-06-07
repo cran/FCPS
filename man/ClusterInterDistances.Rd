@@ -19,7 +19,7 @@ Names,PlotIt=FALSE)
   [1:n,1:n] symmetric distance matrix
 }
   \item{Cls}{
-  [1:n] numerical vector of k classes
+[1:n] numerical vector of numbers defining the classification as the main output of the clustering algorithm for the n cases of data. It has k unique numbers representing the arbitrary labels of the clustering.
 }
   \item{Names}{
   Optional [1:k] character vector naming k classes
@@ -32,7 +32,7 @@ Names,PlotIt=FALSE)
 Cluster distances are given back as a matrix, one column per cluster and the vector of the full distance matrix without the diagonal elements and the upper half of the symmetric matrix.
 }
 \value{
-matrix [1:m,1:(k+1)] of k clusters, each columns consists of the distances between a cluster and all other clusters, filled up with NaN at the end to be of the same lenght as the complete distance matrix.
+Matrix [1:m,1:(k+1)] of k clusters, each columns consists of the distances between a cluster and all other clusters, filled up with NaN at the end to be of the same lenght as the complete distance matrix.
 }
 \references{
 [Thrun, 2018] Thrun, M.C., Projection Based Clustering through Self-Organization and Swarm Intelligence. 2018, Heidelberg: Springer.
@@ -52,7 +52,7 @@ Distance=as.matrix(dist(Hepta$Data))
 
 interdists=ClusterInterDistances(Distance,Hepta$Cls)
 }
-% Add one or more standard keywords, see file 'KEYWORDS' in the
-% R documentation directory.
-\keyword{inter-cluster}% use one of  RShowDoc("KEYWORDS")
-\keyword{distances}% __ONLY ONE__ keyword per line
+
+\concept{inter cluster}
+\keyword{distances}
+\keyword{intercluster}

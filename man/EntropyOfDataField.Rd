@@ -5,7 +5,7 @@
 Entropy Of a Data Field [Wang et al., 2011].
 }
 \description{
-Calculates the Potential Entropy Of a Data Field for a givven ranges of impact factors sigma
+Calculates the Potential Entropy Of a Data Field for a given ranges of impact factors sigma
 }
 \usage{
 EntropyOfDataField(Data, 
@@ -20,17 +20,17 @@ sigmarange = c(0.01, 0.1, 0.5, 1, 2, 5, 8, 10, 100)
 [1:n,1:d] data matrix
 }
   \item{sigmarange}{
-numeric vector [1:s] of relevant sigmas
+Numeric vector [1:s] of relevant sigmas
 }
   \item{PlotIt}{
 FALSE: disable plot, TRUE: Plot with upper boundary of H after [Wang et al., 2011].
 }
 }
 \details{
-In theory there should be a courve with a clear minimum of Entropy [Wang et al.,2011]. Then the choice for the impact factor sigma is the minimum of the entropy to defined the correct data field. It follows, that the influence radius is 3/sqrt(2)*sigma (3B rule of gaussian distribution) for clustering algorithms like Density Peak clustering [Wang et al.,2011].
+In theory there should be a curve with a clear minimum of Entropy [Wang et al.,2011]. Then the choice for the impact factor sigma is the minimum of the entropy to define the correct data field. It follows, that the influence radius is 3/sqrt(2)*sigma (3B rule of gaussian distribution) for clustering algorithms like density peak clustering [Wang et al.,2011].
 }
 \value{
-[1:s] named vector of the Entropy of data field. The names are the impact factor sigma
+[1:s] named vector of the Entropy of data field. The names are the impact factor sigma.
 }
 \references{
 [Wang et al., 2015] Wang, S., Wang, D., Li, C., & Li, Y.: Comment on" Clustering by fast search and find of density peaks", arXiv preprint arXiv:1501.04267, 2015.
@@ -50,8 +50,7 @@ H=EntropyOfDataField(Hepta$Data,PlotIt=FALSE)
 Sigmamin=names(H)[which.min(H)]
 Dc=3/sqrt(2)*as.numeric(names(H)[which.min(H)])
 }
-% Add one or more standard keywords, see file 'KEYWORDS' in the
-% R documentation directory.
-\keyword{data field}% use one of  RShowDoc("KEYWORDS")
-\keyword{entropy}% __ONLY ONE__ keyword per line
-\keyword{data entropy}% __ONLY ONE__ keyword per line
+
+\concept{data field}
+\keyword{entropy}
+\concept{data entropy}

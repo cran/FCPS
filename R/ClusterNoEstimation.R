@@ -1,38 +1,38 @@
-ClusterNoEstimation <- function (Data,
+ClusterNoEstimation <- function (DataOrDistances,
                             ClsMatrix = NULL,
                             max.nc,
                             index = 'all',
                             min.nc = 2,
                             Silent = TRUE,
                             method = NULL,
-                            PlotIt=TRUE) {
-							
-							data=Data
-							cls=ClsMatrix
-  # berechnet die Kennzahlen zu den gegebenen Daten und Clusterungen und die darauf basierende empfohlene Klassenanzahl
+                            PlotIt=TRUE,
+                            SelectByABC=TRUE,Colorsequence) {
+
+  # Computes the operating numbers to the given data and clustering and a resulting recommended operating number of classes
   #
   #  INPUT
-  #  data        Daten
-  #  cls         Clusterungen der zu ueberpruefenden Klassenanzahlen als Matrix mit einer Clusterung pro Spalte
-  #              (siehe auch Notes (1) und (2)), muss angegeben werden, wenn method = NULL
-  #  max.nc      hoechste Klassenanzahl, die ueberprueft werden soll
-  #  method      Clusterverfahren, mit dem die Clusterungen erstellt werden (siehe DETAILS fuer moegliche Methoden),
-  #              muss angegeben werden, wenn cls = NULL
+  #  DataOrDistances    Data
+  #  ClsMatrix          Clustering of the number of classes, which needs to be checked as matrix with one
+  #                     clustering as one column
+  #                     (see also notes (1) und (2)), needs to be given, if method = NULL
+  #  max.nc             Highest number of classes, which should get checked
+  #  method             Clustering method, with which clustering got created (see DETAILS for possible methods),
+  #                     needs to be given, if cls = NULL
   #
   #  OPTIONAL
-  #  index           Vektor der Kennzahlen die berechnet werden sollen, Standard = 'all',
-  #                  siehe DETAILS fuer moegliche Kennzahlen
-  #  min.nc          niedrigste Klassenanzahl, die ueberprueft werden soll, Standard = 2
-  #  Silent    wenn TRUE werden Statusmeldungen ausgeben, Standard = FALSE
+  #  index           Vector of operating number which should be computed, standard = 'all',
+  #                  see DETAILS for possible operating numbers
+  #  min.nc          Lowest number of classes, which should get checked, standard = 2
+  #  Silent          If TRUE, then status messages will be given, standard = FALSE
   #
   #  RETURN
-  #  Kennzahlen          Matrix der berechneten Kennzahlen
-  #  Klassenanzahl       fuer jede berechnete Kennzahl die empfohlene Klassenanzahl
-  #  Clusterungen        die eingebenen Clusterungen
-  #  criticalValues      die kritschen Werte fuer die Kennzahlen duda, pseudot2, beale
+  #  Indicators          Matrix of computed operating numbers
+  #  ClusterNo       For each computed operating number the recommended number of classes
+  #  ClsMatrix        Give clustering
+  #  criticalValues      Critical values for operating numbers, see duda, pseudot2, beale
   #
   #  DETAILS
-  #  Es koennen folgende 26 Kennzahlen berechnet werden:
+  #  Following 26 operating numbers can be computed:
   #
   #  "calinski", "cindex", "db", "hartigan",
   #  "ratkowsky", "scott", "marriot", "ball", "trcovw", "tracew",
@@ -40,32 +40,48 @@ ClusterNoEstimation <- function (Data,
   #  "duda", "pseudot2", "beale", "ptbiserial", "frey",
   #  "mcclain", "dunn", "sdindex", "sdbw"
   #
-  #  Diese koennen ueber den Parameter index einzeln oder als Vektor angegeben werden.
-  #  Bei Eingabe 'all' werden alle Kennzahlen berechnet.
+  #  Those can be computed individually via the parameter or as vector.
+  #  If input "all", then all operating numbers will get computed.
   #
-  #  Zur Erstellung der Clusterungen koennen folgende Methoden verwendet werden:
+  #  For the creation of the clustering, following methods can be used
   #
   #  "ward.D", "single", "complete", "average", "mcquitty", 
   #  "median", "centroid", "ward.D2", "kmeans", "DBSclustering"
   #
   #  NOTES
-  #  (1) Die Kennzahlen kl, duda, pseudot2, beale, frey und mcclain benoetigen eine Clusterung
-  #  fuer max.nc+1 Klassen. Sollen diese Kennzahlen berechnet werden, muss diese Clusterung in cls
-  #  mitangegeben werden.
+  #  (1) The operating numbers kl, duda, pseudot2, beale, frey und mcclain needs a clustering
+  #  for max.nc+1 classes. If those operating numbers should get computed, the clustering in cls
+  #  has to be stated.
   #
-  #  (2) Die Kennzahl kl benoetigt eine Clusterung fuer min.nc-1 Klassen. Soll diese Kennzahl berechnet werden,
-  #  muss dieser Clusterung in cls mitangegeben werden. Fuer den Fall min.nc = 2 muss keine Clusterung fuer 1
-  #  angegeben werden.
+  #  (2) the index kl requires a clustering for min.nc-1 number of cluster.If this index has to be computed,
+  #  each clustering has to be given in the function in matrix style. In the case of min.nc = 2 no clustering for cluster number equal to 1 is required
   #
-  #  (3) Die Kennzahlen duda, pseudot2, beale und frey sind nur fuer die Anwendung bei hierarchischen
-  #  Clusterverfahren gedacht.
+  #  (3) the indices duda, pseudot2, beale und frey can only be applied in case of hierarchical cluster algorithms
   #
   #  AUTHOR
   #  Peter Nahrgang
+  #  1.Editor: MT: added distances, try() for indicator that not work always, further error catching, fan plotting
   #
   #  REFERENCES
   #  Charrad, Malika, et al. "Package 'NbClust'." J. Stat. Soft 61 (2014): 1-36.
   #  Dimtriadou, E. "cclust: Convex Clustering Methods and Clustering Indexes." R package version 0.6-16, URL http://CRAN. R-project. org/package= cclust (2009).
+  cls=ClsMatrix
+  if(!is.null(cls)){
+    if(!is.matrix(cls)){
+      warning('ClsMatrix is not a matrix. calling as.matrix')
+      cls=as.matrix(cls)
+    }
+    if(any(apply(cls,2,function(x) length(unique(x)))<2)){
+      stop('Amount of unqiue clusters for each column of ClsMatrix should be at least 2,')
+    }
+  }							
+  
+
+  if (isSymmetric(unname(DataOrDistances))) {
+    data=internalMDSestimate(DataOrDistances)
+  }else{
+    data=DataOrDistances
+  }	
   
   range <- max.nc - min.nc + 1
   
@@ -103,8 +119,7 @@ ClusterNoEstimation <- function (Data,
   indexanzahl <- length(indexnames)
   all <- indexanzahl + 1
   
-  indexn <- pmatch(index, c(indexnames,
-                            "all"))
+  indexn <- pmatch(index, c(indexnames,"all"))
   
   crits <- c()
   if (any(indexn == 18)) {
@@ -120,7 +135,7 @@ ClusterNoEstimation <- function (Data,
     crits <- c(1:3)
   }
   
-  #Hilfsfunktionen
+  # Helper functions
   centers <- function(cls) {
     n <- length(cls)
     k <- max(cls)
@@ -250,9 +265,7 @@ ClusterNoEstimation <- function (Data,
         res[c] <- res[c] + 1
       }
     }
-    
     res
-    
   }
   
   ttww <- function(x, clsize, cluster) {
@@ -260,10 +273,14 @@ ClusterNoEstimation <- function (Data,
     k <- length(clsize)
     w <- 0
     tt <- cov(x) * n
+    zttw <- list(tt =  tt, w = w)
     for (l in 1:k) {
-      w <- w + cov(x[cluster == l, ]) * clsize[l]
+      wtemp=cov(x[cluster == l, ,drop=FALSE]) * clsize[l]
+      if(sum(is.na(wtemp))==0)
+        w <- w + wtemp
     }
-    zttw <- list(tt = tt, w = w)
+    zttw$w=w
+ 
     return(zttw)
   }
   
@@ -315,7 +332,7 @@ ClusterNoEstimation <- function (Data,
     # Standard deviation
     stdev <- (1 / k) * sqrt(Somme.variance.clusters)
     
-    #Average scattering for clusters
+    # Average scattering for clusters
     scat <-
       (1 / k) * (Somme.variance.clusters / sqrt(variance.matrix %*% variance.matrix))
     
@@ -434,10 +451,10 @@ ClusterNoEstimation <- function (Data,
     Dis <- (Dmax / Dmin) * s2
     return(Dis)
   }
-  #Hilfsfunktionen ende
+  # End: helper methods
   ########
   
-  # verarbeitung der clss
+  # Processing of clss
   
   if (is.null(method)) {
   
@@ -449,11 +466,11 @@ ClusterNoEstimation <- function (Data,
           indexn == 23,
           indexn == 27)) {
     if (dim(cls)[2] == range) {
-      stop("falsche cls")
+      stop("Columns of ClsMatrix are expected to be from min.nc to max.nc. However to number of columns does not equal the range of cluster numbers to be investigated. Please provide appropriate choice for max.nc and min.nc. ")
     }
     else if (dim(cls)[2] == range + 1 &&
              any(indexn == 15, indexn == 27) && min.nc != 2) {
-      stop("falsche cls")
+      stop("Selected indicators require min.nc to be set with two.")
     }
     else if (dim(cls)[2] == range + 1) {
       clusters <- cls[, 1:range]
@@ -478,12 +495,12 @@ ClusterNoEstimation <- function (Data,
   }
   
   if (!Silent) {
-   print("eingebene Clusterungen in Ordnung, starte Berechnung") 
+   message("Given clusterings are done, start computation") 
   }
   }
   else {
     if (!Silent) {
-      print("Clusterungen werden erstellt") 
+      message("Clustering in creation") 
     }
     methodnames <- c("ward.D", "single", "complete", "average", "mcquitty", 
                      "median", "centroid", "ward.D2","kmeans","DBSclustering")
@@ -509,8 +526,13 @@ ClusterNoEstimation <- function (Data,
       }
     }
     else if (methodn == 10) {
-	requireNamespace('DatabionicSwarm')
-      projPoints <- DatabionicSwarm::Pswarm(data)
+      
+      if(requireNamespace("DatabionicSwarm")){
+        projPoints <- DatabionicSwarm::Pswarm(data)
+      }
+      else{
+        stop('DatabionicSwarm package not loaded or installed.')
+      }
       
       for (i in 0:(range + 1)) {
         if (i != 0 || !min.nc == 2) {
@@ -518,11 +540,9 @@ ClusterNoEstimation <- function (Data,
           clusters2[,i+1] <- temp
         }
       }
-      
-      
     }
     else {
-      stop("falsche methode")
+      stop("Wrong method")
     }
     
     colnames(clusters2) <- c((min.nc - 1):(max.nc + 1))
@@ -530,14 +550,14 @@ ClusterNoEstimation <- function (Data,
     colnames(clusters) <- c(min.nc:max.nc)
     
     if (!Silent) {
-      print("Clusterungen erstellt, starte Berechnung") 
+      message("Clusterings created, start computation") 
     }
   }
   
   ######
   
-  #Funktionen zur Berechnung der Kennzahlen
-  #Kennzahlen aus cclust
+  # Methods to compute operating numbers
+  # Operating numbers from cclust
   calinski <- function(zgss, clsize) {
     n <- sum(clsize)
     k <- length(clsize)
@@ -648,9 +668,9 @@ ClusterNoEstimation <- function (Data,
     xuindex <- d * log(sqrt(zgss$wgss / (d * (n ^ 2)))) + log(k)
     return(xuindex)
   }
-  #cclust ende
+  # cclust end
   
-  #kennzahlen aus nbclust
+  # Operating numbers from nbclust
   ##################################
   #                                #
   #      Frey and McClain          #
@@ -708,7 +728,7 @@ ClusterNoEstimation <- function (Data,
       bx <- numeric(0)
       for (x in 1:cn2) {
         if (x != w) {
-          swx <- dmat[cl2 == w, cl2 == x]
+          swx <- dmat[cl2 == w, cl2 == x,drop=FALSE]
           bx <- c(bx, swx)
           if (w < x) {
             separation.matrix[w, x] <- separation.matrix[x, w] <- min(swx)
@@ -988,6 +1008,10 @@ ClusterNoEstimation <- function (Data,
     
     gss <- function(x, cl, d)
     {
+      results <- list(wgss = NaN,
+                      bgss = NaN,
+                      centers = NaN)
+      try({
       n <- length(cl)
       k <- max(cl)
       centers <- matrix(nrow = k, ncol = ncol(x))
@@ -1007,7 +1031,7 @@ ClusterNoEstimation <- function (Data,
         }
         else
         {
-          centers[i, ] <- apply(x[cl == i, ], 2, mean)
+          centers[i, ] <- apply(x[cl == i, ,drop=FALSE], 2, mean)
         }
         
       }
@@ -1025,6 +1049,7 @@ ClusterNoEstimation <- function (Data,
       results <- list(wgss = wgss,
                       bgss = bgss,
                       centers = centers)
+      })
       return(results)
     }
     
@@ -1213,7 +1238,7 @@ ClusterNoEstimation <- function (Data,
       return(dunn)
     }
   
-  # Funktionen zur Bestimmung der optimalen Klassenanzahl
+  # Methods to determine optimal number of classes
   # maximum difference to left side
   max.left <- function(indizes) {
     
@@ -1234,7 +1259,7 @@ ClusterNoEstimation <- function (Data,
     
   }
   
-  # maximum difference to right side
+  # Maximum difference to right side
   max.right <- function(indizes) {
     
     
@@ -1255,7 +1280,7 @@ ClusterNoEstimation <- function (Data,
     
   }
   
-  # maximum of second differences
+  # Maximum of second differences
   max.second <- function(indizes) {
     
     
@@ -1275,7 +1300,7 @@ ClusterNoEstimation <- function (Data,
     
   }
   
-  # minimum of second differences
+  # Minimum of second differences
   min.second <- function(indizes) {
     
     
@@ -1295,7 +1320,7 @@ ClusterNoEstimation <- function (Data,
     
   }
   
-  # maximale index
+  # Maximal index
   max.index <- function(indizes) {
     
     k.min <- as.numeric(names(indizes)[1])
@@ -1308,7 +1333,7 @@ ClusterNoEstimation <- function (Data,
     
   }
   
-  # minimale index
+  # Minimal index
   min.index <- function(indizes) {
     
     k.min <- as.numeric(names(indizes)[1])
@@ -1323,7 +1348,7 @@ ClusterNoEstimation <- function (Data,
   
   ####
   
-  #Berechnung der Kennzahlen
+  # Computation of operating numbers  ----
   res <- matrix(data = 0,
                 nrow = range,
                 ncol = length(indexnames))
@@ -1344,7 +1369,7 @@ ClusterNoEstimation <- function (Data,
     #temp <- rep(min.nc+i,4)
     
     temp1 <- rep(0, 14)
-    temp2 <- list(Kennzahlen = rep(0, 12),
+    temp2 <- list(Indicators = rep(0, 12),
                   criticalValues = rep(0, 3))
     if (any(indexn <= 14) || indexn == all) {
       clstemp <- clusters[, i + 1]
@@ -1362,7 +1387,7 @@ ClusterNoEstimation <- function (Data,
       zttw <- ttww(data, clres$size, clres$cluster)
     }
     
-    #Kennzahlen aus cclust
+    #Indicators aus cclust
     if (any(indexn == 1) || indexn == all) {
       res[i + 1, 1] <- calinski(zgss, clres$size)
     }
@@ -1409,7 +1434,7 @@ ClusterNoEstimation <- function (Data,
     if (any(indexn == 14) || indexn == all) {
       res[i + 1, 14] <- xu(data, clres$size, zgss)
     }
-    #Kennzahlen aus NbClust
+    # Operating numbers from NbClust
     if (any(indexn >= 15) || indexn == all) {
      
       jeu <- data
@@ -1486,7 +1511,7 @@ ClusterNoEstimation <- function (Data,
       NM <- temp$NM
       NK <- temp$NK
       NL <- temp$NL
-      zz <- 3.20 # Best standard score in Milligan and Cooper 1985
+      zz <- 3.20 # Best standard score in (Milligan and Cooper, 1985)
       zzz <- zz * sqrt(2 * (1 - 8 / ((pi ^ 2) * pp)) / (NM * pp))
       
       
@@ -1518,6 +1543,7 @@ ClusterNoEstimation <- function (Data,
     }
     if (any(indexn == 22) || any(indexn == 23) || indexn == all)
     {
+      
       temp <- Index.15and28(cl1 = cl1,
                             cl2 = cl2,
                             md = md)
@@ -1539,24 +1565,24 @@ ClusterNoEstimation <- function (Data,
     }
     
     if (!Silent) {
-      print(paste0("Kennzahlen fuer Klassenanzahl ",i+min.nc," berechnet, hoechste Klassenanzahl: ",max.nc))
+      message(paste0("Operating numbers for number of classes ",i+min.nc," computed, highest number of classes: ",max.nc))
     }
     
   }
   
   if (!Silent) {
-    print("Kennzahlen berechnet, ermittle optimale Klassenanzahlen")
+    message("Operating numbers computed, investigate optimal number of classes")
   }
   
   
   
-  #Bestimmen der optimalen Klassenanzahl
+  # Determine optimal number of classes
   klassenanzahl <-
     matrix(data = 0,
            nrow = 1,
            ncol = length(indexnames))
   colnames(klassenanzahl) <- indexnames
-  rownames(klassenanzahl) <- c("empfohlene Klassenanzahl")
+  rownames(klassenanzahl) <- c("Recommended number of classes")
   
   if (any(indexn == 1) || indexn == all) {
     #calinski
@@ -1737,19 +1763,34 @@ ClusterNoEstimation <- function (Data,
     }
     klassenanzahl <- as.matrix(klassenanzahl[, indexn])
     rownames(klassenanzahl) <- indexnames[indexn]
-    colnames(klassenanzahl) <- c("empfohlene Klassenanzahl")
+    colnames(klassenanzahl) <- c("Recommended number of classes")
   }
   else {
     klassenanzahl <- t(klassenanzahl)
   }
   
   if (!Silent) {
-    print("optimale Klassenanzahlen per Verfahren ermittelt - ENDE")
+    message("Optimal number of classes per method investigated - END")
   }
   if(isTRUE(PlotIt)){
     cat=paste('Cluster No.',klassenanzahl)
-    requireNamespace('DataVisualizations')
-    DataVisualizations::Fanplot(cat,main = 'Indicators for Cluster No.')
+    if(requireNamespace("DataVisualizations")){
+      n=length(unique(klassenanzahl))
+      if(missing(Colorsequence))
+        Colorsequence=grDevices::topo.colors(n)
+      else{
+        if(n<=length(Colorsequence)){
+          Colorsequence=Colorsequence[1:n]
+        }else{
+          Colorsequence=c(Colorsequence,tail(DataVisualizations::DefaultColorSequence,n-length(Colorsequence)))
+          message('Colors added using the tail of DataVisualizations::DefaultColorSequence because number of colors was smaller than number of labels.')
+        }
+      }
+      DataVisualizations::Fanplot(Datavector = cat,Names = unique(cat),Labels = unique(cat),main = 'Indicators for Cluster No.',MaxNumberOfSlices = SelectByABC,col = Colorsequence)
+    }
+    else{
+      stop('DataVisualizations package not loaded or installed.')
+    }
   }
   resliste <- list(
     Indicators = res,

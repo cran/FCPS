@@ -1,14 +1,44 @@
 OPTICSclustering=function(Data, MaxRadius,RadiusThreshold, minPts = 5, PlotIt=FALSE,...){
-  
-  requireNamespace('dbscan')
+  # INPUT
+  # Data[1:n,1:d]     Data set with n observations and d features
+  # MaxRadius         upper limit neighborhood in the R-ball graph/unit disk graph), size of the
+  #                   epsilon neighborhood  (eps) [Ester et al., 1996, p. 227]. If NULL, automatic
+  #                   estimation is done using insights of [Ultsch, 2005].
+  # RadiusThreshold   Threshold to identify clusters (RadiusThreshold <= MaxRadius), if NULL 0.9*MaxRadius is set.
+  #
+  # OPTIONAL
+  # minPts            Default = 5
+  # PlotIt            Boolean. Decision to plot or not
+  #
+  # OUTPUT
+  # Cls[1:n]          Clustering of data
+  # Object            Object of adpclust algorithm
+  #
+  # Author: MT, 04/2018
+  if (!requireNamespace('dbscan')) {
+    message(
+      'Subordinate clustering package is missing. No computations are performed.
+            Please install the package which is defined in "Suggests".'
+    )
+    return(
+      list(
+        Cls = rep(1, nrow(Data)),
+        Object = "Subordinate clustering package is missing.
+                Please install the package which is defined in 'Suggests'."
+      )
+    )
+  }
   
   if(is.null(MaxRadius)){  
-    warning('The MaxRadius (eps) parameter is missing but it is required in OPTICS Trying to estimate..')
-	requireNamespace('DataVisualizations')
-    MaxRadius=0.5*DataVisualizations::ParetoRadius(Data)
-  } 
+    warning('The MaxRadius (eps) parameter is missing but it is required in OPTICS. Trying to estimate..')
+	  if(requireNamespace("DataVisualizations")){
+	    MaxRadius=0.5*DataVisualizations::ParetoRadius(Data)
+	  }else{
+	    stop('DataVisualizations package not loaded or installed.')
+	  }
+  }
   if(is.null(RadiusThreshold)){  
-    warning('The RadiusThreshold (eps_cl) parameter is missing but it is required in OPTICS Trying to estimate..')
+    warning('The RadiusThreshold (eps_cl) parameter is missing but it is required in OPTICS. Trying to estimate..')
     RadiusThreshold=0.9*MaxRadius
   } 
   if(is.null(minPts)){

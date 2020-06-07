@@ -1,6 +1,6 @@
 \name{DBscan}
 \alias{DBscan}
-%- Also NEED an '\alias' for EACH other topic documented here.
+
 \title{
 DBscan
 }
@@ -12,21 +12,21 @@ DBscan(Data,Radius,minPts,
 
 PlotIt=FALSE,UpperLimitRadius,\dots)
 }
-%- maybe also 'usage' for other objects documented here.
+
 \arguments{
-\item{Data}{[1:n,1:d] matrix of dataset to be clustered. It consists of n cases or d-dimensional data points. Every case has d attributes, variables or features.}
+\item{Data}{[1:n,1:d] matrix of dataset to be clustered. It consists of n cases of d-dimensional data points. Every case has d attributes, variables or features.}
 
   \item{Radius}{
- eps [Ester et al., 1996, p. 227] neighborhood in the R-ball graph/unit disk graph), size of the epsilon neighborhood.
+ Eps [Ester et al., 1996, p. 227] neighborhood in the R-ball graph/unit disk graph), size of the epsilon neighborhood.
  If NULL, automatic estimation is performed using insights of [Ultsch, 2005].
 }
   \item{minPts}{
- number of minimum points in the eps region (for core points). 
+ Number of minimum points in the eps region (for core points). 
  In principle minimum number of points in the unit disk, if the unit disk is within the cluster (core) [Ester et al., 1996, p. 228].
  If NULL, 2.5 percent of points is selected.
 }
 
-\item{PlotIt}{default: FALSE, If TRUE plots the first three dimensions of the dataset with colored three-dimensional data points defined by the clustering stored in \code{Cls}}
+\item{PlotIt}{Default: FALSE, If TRUE plots the first three dimensions of the dataset with colored three-dimensional data points defined by the clustering stored in \code{Cls}}
 \item{UpperLimitRadius}{Limit for radius search, experimental}
 
 \item{\dots}{Further arguments to be set for the clustering algorithm, if not set, default arguments are used.}
@@ -74,7 +74,7 @@ for (i in seq_len(nrow(DBSGrid))) {
     UpperLimitRadius = parameters$Radius
   )$Cls
   if (length(unique(Cls9)) < 5)
-    BestAcc[i] = ClusteringAccuracy(WingNut$Cls,
+    BestAcc[i] = DatabionicSwarm::ClusteringAccuracy(WingNut$Cls,
                                     
                                     Cls9) * 100
   else
@@ -88,8 +88,7 @@ Cls9 = DBscan(
   Data,
   minPts = parameters$minPTs,
   Radius = parameters$Radius,
-  PlotIt = F,
-  UpperLimitRadius = parameters$Radius,
+  UpperLimitRadius = parameters$Radius, 
   PlotIt = TRUE
 )$Cls
 }

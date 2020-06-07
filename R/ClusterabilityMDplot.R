@@ -1,14 +1,61 @@
-ClusterabilityMDplot=function(DataOrDistance,Method="pca",na.rm=FALSE){
-  #author MT
+ClusterabilityMDplot=function(DataOrDistance,Method="pca",na.rm=FALSE,...){
+  #
+  # INPUT
+  # DataOrDistances[1:n,1:d]    Dataset with n observations and d features or distance matrix with size n
+  #
+  # OPTIONAL
+  # Method                      Choose option: "none" performs no dimension reductio
+  #                                            "pca" uses the scores from the first principal component.
+  #                                            "distance" computes pairwise distances (using distance_metric as the metric).
+  # na.rm                       statistical testing will not work with missing values, if TRUE values are imputed with averages
+  #
+  # Author: MT
   requireNamespace('clusterability')
   requireNamespace('ggplot2')
   requireNamespace('signal')
   requireNamespace('reshape2')
   
+  dots=list(...)
+  
+  if (!requireNamespace('clusterability')) {
+    message(
+      'Subordinate clustering package is missing. No computations are performed.
+            Please install the package which is defined in "Suggests".'
+    )
+    return(
+      list(
+        Cls = rep(1, nrow(DataOrDistance)),
+        Object = "Subordinate clustering package is missing.
+                Please install the package which is defined in 'Suggests'."
+      )
+    )
+  }
+  
+  if(is.null(dots[["center"]]))
+    center=FALSE
+  else
+    center=dots$center
+  
+  if(is.null(dots[["scale"]]))
+    scale=FALSE
+  else
+    scale=dots$scale
+  
+  if(is.null(dots[["Ordering"]]))
+    Ordering="Columnwise"
+  else
+    Ordering=dots$Ordering
+  
+  
   #requireNamespace('DataVisualizations')
 
   ## real code
   if(!is.list(DataOrDistance)){
+    if(is.null(dots[["main"]]))
+      main=paste('MDplot of Clusterability')
+    else
+      main=dots$main
+    
     if(isFALSE(na.rm)){
       if(sum(!is.finite(DataOrDistance))>0){
         stop('ClusterabilityMDplot: Non-Finite Data found. Please perform imputation before using function because statistical testing will not work otherwise.')
@@ -36,7 +83,7 @@ ClusterabilityMDplot=function(DataOrDistance,Method="pca",na.rm=FALSE){
         })
       }
     }
-  pvalm=clusterability::clusterabilitytest(DataOrDistance,reduction = Method,test = 'dip',pca_scale=FALSE,pca_center=FALSE,is_dist_matrix = IsDistance)
+  pvalm=clusterability::clusterabilitytest(DataOrDistance,reduction = Method,test = 'dip',pca_scale=scale,pca_center=scale,is_dist_matrix = IsDistance)
   #print(pvalm$pvalue)
   pvalue=round(pvalm$pvalue,2)
   if(pvalue==0) 
@@ -44,11 +91,11 @@ ClusterabilityMDplot=function(DataOrDistance,Method="pca",na.rm=FALSE){
   else
     pvalue=paste('p =',pvalue)
   
-  main=paste('MDplot of Clusterability')
+
   if(isFALSE(isSymmetric(unname(DataOrDistance)))){
     
     if(Method!="distance"){
-      res <- prcomp(x=DataOrDistance,retx=T,scale. =FALSE,tol = 0,center=FALSE)
+      res <- prcomp(x=DataOrDistance,retx=T,scale. =scale,tol = 0,center=center)
       TransData=as.matrix(res$x)
       ProjectedPoints=TransData[,1]
     }else{
@@ -56,25 +103,36 @@ ClusterabilityMDplot=function(DataOrDistance,Method="pca",na.rm=FALSE){
       ProjectedPoints=x[upper.tri(x,diag = FALSE)]
     }
   
-    plot=DataVisualizations::MDplot(as.vector(ProjectedPoints),Names = pvalue,Ordering = 'Columnwise',OnlyPlotOutput = TRUE)+ggplot2::ggtitle(main)+
-      ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5))+
-      ggplot2::xlab('Probability that data has no cluster structure')+
-      ggplot2::ylab('PDE of 1st Principal Component')
-  }else{
-      x=DataOrDistance[upper.tri(DataOrDistance,diag = FALSE)]
+    if(requireNamespace("DataVisualizations")){
+      plot=DataVisualizations::MDplot(as.vector(ProjectedPoints),Names = pvalue,Ordering = Ordering,OnlyPlotOutput = TRUE)+ggplot2::ggtitle(main)+
+        ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5))+
+        ggplot2::xlab('Probability that data has no cluster structure')+
+        ggplot2::ylab('PDE of 1st principal component')
+    }
+    else{
+      stop('DataVisualizations package not loaded or installed.')
+    }
     
-    plot=DataVisualizations::MDplot(x,Names = pvalue,Ordering = 'Columnwise',OnlyPlotOutput = TRUE)+
-      ggplot2::ggtitle(main)+
-      ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5))+
-      ggplot2::xlab('Probability that data has no cluster structure')+
-      ggplot2::ylab('PDE of Distance Distribution')
+  }else{
+    x=DataOrDistance[upper.tri(DataOrDistance,diag = FALSE)]
+    
+    if(requireNamespace("DataVisualizations")){
+      plot=DataVisualizations::MDplot(x,Names = pvalue,Ordering = Ordering,OnlyPlotOutput = TRUE)+
+        ggplot2::ggtitle(main)+
+        ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5))+
+        ggplot2::xlab('Probability that data has no cluster structure')+
+        ggplot2::ylab('PDE of distance distribution')
+    }
+    else{
+      stop('DataVisualizations package not loaded or installed.')
+    }
   }
   
   }else{#dataordistance is list
     n=length(DataOrDistance)
     isDistance=unlist(lapply(DataOrDistance, function(x) isSymmetric(unname(x))))
     
-    pvalsL=lapply(DataOrDistance, function(x,Method,na.rm){
+    pvalsL=lapply(DataOrDistance, function(x,Method,na.rm,center,scale){
       IsDistance_hlp=FALSE
       if(isSymmetric(unname(x))){
         Method="none"
@@ -95,8 +153,8 @@ ClusterabilityMDplot=function(DataOrDistance,Method="pca",na.rm=FALSE){
           })
         }
       }
-      return(clusterability::clusterabilitytest(x,reduction = Method,test = 'dip',pca_scale=FALSE,pca_center=FALSE,is_dist_matrix = IsDistance_hlp)$pvalue)
-    },Method,na.rm) 
+      return(clusterability::clusterabilitytest(x,reduction = Method,test = 'dip',pca_scale=scale,pca_center=center,is_dist_matrix = IsDistance_hlp)$pvalue)
+    },Method,na.rm,center,scale) 
     Names=names(DataOrDistance)
     vals=unlist(pvalsL)
     vals=round(vals,2)
@@ -104,23 +162,23 @@ ClusterabilityMDplot=function(DataOrDistance,Method="pca",na.rm=FALSE){
      ind2=which(vals!=0)
      vals[ind]='p < 0.01'
      vals[ind2]=paste("p =",vals[ind2])
-	 #modes depricated
+	 # Modes depricated
     if(is.null(Names)){
-      Ordering = 'Columnwise'
+      #Ordering = 'Columnwise'
       Names=as.character(vals)
     }else{
       Names=paste0(Names,', ',vals)
-      if(Method!="distance")
-        Ordering = 'Bimodal'
-      else
-        Ordering = 'Columnwise'
+      #if(Method!="distance")
+      #  Ordering = 'Bimodal'
+     # else
+      #  Ordering = 'Columnwise'
     }
     
-    pcasordistances=lapply(DataOrDistance, function(x,Method){
+    pcasordistances=lapply(DataOrDistance, function(x,Method,scale,center){
       
       if(isFALSE(isSymmetric(unname(x)))){
         if(Method!="distance"){
-          res <- prcomp(x=x,retx=T,scale. =FALSE,tol = 0,center=FALSE)
+          res <- prcomp(x=x,retx=T,scale. =scale,tol = 0,center=center)
           TransData=as.matrix(res$x)
           ProjectedPoints=as.vector(TransData[,1])
         }else{
@@ -131,18 +189,29 @@ ClusterabilityMDplot=function(DataOrDistance,Method="pca",na.rm=FALSE){
       }else{
         return(x[upper.tri(x,diag = FALSE)])
       }
-    },Method 
-    )
- 
+    },Method,scale,center)
+    
+    if(is.null(dots[["main"]]))
+      main=paste('MDplot of clusterability for multiple datasets')
+    else
+      main=dots$main
+    
     names(pcasordistances)=Names
-    plot=DataVisualizations::MDplot4multiplevectors(pcasordistances,Gaussian_lwd=0.5,Names = Names,Ordering = Ordering,Scaling = 'Robust')+
-      ggplot2::ggtitle('MDplot of Clusterability for Multiple Datasets')+
-      ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5))+
-      ggplot2::xlab('Probability that data has no cluster structure')
+    
+    if(requireNamespace("DataVisualizations")){
+      plot=DataVisualizations::MDplot4multiplevectors(pcasordistances,Gaussian_lwd=0.5,Names = Names,Ordering = Ordering,Scaling = 'Robust')+
+        ggplot2::ggtitle(main)+
+        ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5))+
+        ggplot2::xlab('Probability that data has no cluster structure')
+    }
+    else{
+      stop('DataVisualizations package not loaded or installed.')
+    }
+    
     if(sum(isDistance)==0){
-      plot+ggplot2::ylab('PDE of 1st Principal Component')
+      plot+ggplot2::ylab('PDE of 1st principal component')
     }else{
-      plot+ ggplot2::ylab('PDE of 1st Principal Component/Distance Distribution')
+      plot+ ggplot2::ylab('PDE of 1st principal component/distance distribution')
     }
   }#end dataordistance is list
   return(plot)
@@ -183,7 +252,7 @@ stat_pde_density <- function(mapping = NULL,
 compute_pdedensity <- function(x) {
   nx <- length(x)
   
-  # if less than 2 points return data frame of NAs and a warning
+  # If less than 2 points, then return data frame of NAs and a warning
   if (nx < 2) {
     warning("stat_pde_density: Groups with fewer than two data points have been dropped.",
             call. = FALSE)
@@ -201,7 +270,7 @@ compute_pdedensity <- function(x) {
   ##MT: chatch error of one unique value
   Flag <- FALSE
   if (length(unique(x)) ==1) {
-    warning('stat_pde_density: Only one unique value in Data.')
+    warning('stat_pde_density: Only one unique value in data.')
     if(unique(x)!=0)
       x <- c(unique(x), head(x, 1) * runif(1, 0.999, 1.001))
     else
@@ -212,9 +281,9 @@ compute_pdedensity <- function(x) {
   requireNamespace('DataVisualizations')
   dens <- DataVisualizations::ParetoDensityEstimation(Data = x)
   
-  # Density cannot be estiamted, set density to value equal 1
+  # Density cannot be estimated, set density to value 1
   if (Flag) {
-    # scatter kernels a little to visualize several features if given
+    # Scatter kernels a little to visualize several features if given
     dens$kernels <- dens$kernels * runif(length(dens$kernels), 0.998, 1.002)
     x <- max(dens$kernels) - min(dens$kernels)
     dens$paretoDensity[1:length(dens$paretoDensity)] <- 1 / x # integral over pdf should be 1
@@ -271,16 +340,16 @@ StatPDEdensity <- ggproto("StatPDEdensity",
                               na.rm = na.rm
                             )
                             
-                            # choose how violins are scaled relative to each other
+                            # Choose how violins are scaled relative to each other
                             data$violinwidth <- switch(
                               scale,
-                              # area : keep the original densities but scale them to a max width of 1
+                              # Area : keep the original densities but scale them to a max width of 1
                               #        for plotting purposes only
                               area = data$density / max(data$density),
-                              # count: use the original densities scaled to a maximum of 1 (as above)
+                              # Count: use the original densities scaled to a maximum of 1 (as above)
                               #        and then scale them according to the number of observations
                               count = data$density / max(data$density) * data$n / max(data$n),
-                              # width: constant width (density scaled to a maximum of 1)
+                              # Width: constant width (density scaled to a maximum of 1)
                               width = data$scaled
                             )
                             data
