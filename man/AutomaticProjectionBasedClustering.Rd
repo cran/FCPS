@@ -14,7 +14,14 @@ StructureType = TRUE,PlotIt=FALSE,PlotTree=FALSE,PlotMap=FALSE,\dots)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-\item{DataOrDistances}{[1:n,1:d] matrix of dataset to be clustered. It consists of n cases of d-dimensional data points. Every case has d attributes, variables or features.}
+\item{DataOrDistances}{
+Either nonsymmetric [1:n,1:d] numerical matrix of a dataset to be clustered. It consists of n cases of d-dimensional data points. Every case has d attributes, variables or features.
+
+or
+
+symmetric [1:n,1:n] distance matrix, e.g. \code{as.matrix(dist(Data,method))}
+
+}
 
 \item{ClusterNo}{A number k which defines k different clusters to be built by the algorithm.}
 \item{Type}{
@@ -66,7 +73,7 @@ List of
 
 [Thrun/Ultsch, 2017]  Thrun, M. C., & Ultsch, A.: Projection based Clustering, Proc. International Federation of Classification Societies (IFCS), pp. 250-251, Tokai University, Japanese Classification Society (JCS), Tokyo, Japan August 7-10, 2017.
 
-[Thrun/Ultsch, 2020a]  Thrun, M. C., & Ultsch, A.: Using Projection based Clustering to Find Distance and Density based Clusters in High-Dimensional Data, Journal of Classification. accepted, doi 10.1007/s00357-020-09373-2, 2020.
+[Thrun/Ultsch, 2020a]  Thrun, M. C., & Ultsch, A.: Using Projection based Clustering to Find Distance and Density based Clusters in High-Dimensional Data, Journal of Classification, in press, doi 10.1007/s00357-020-09373-2, 2020.
 
 [Thrun et al., 2016]  Thrun, M. C., Lerch, F., Loetsch, J., & Ultsch, A.: Visualization and 3D Printing of Multivariate Data of Biomarkers, in Skala, V. (Ed.), International Conference in Central Europe on Computer Graphics, Visualization and Computer Vision (WSCG), Vol. 24, pp. 7-16, Plzen, http://wscg.zcu.cz/wscg2016/short/A43-full.pdf, 2016.
 

@@ -1,9 +1,9 @@
 Package: FCPS
 Type: Package
 Title: Fundamental Clustering Problems Suite
-Version: 1.2.3
-Date: 2020-06-26
-Authors@R: c(person("Michael", "Thrun", email= "m.thrun@gmx.net",role=c("aut","cre","cph"), comment = c(ORCID = "0000-0001-9542-5543")),person("Quirin", "Stier",role=c("ctb","rev")),person("Peter", "Nahrgang",role=c("ctr","ctb")),person("Felix", "Pape",role=c("ctr","ctb")),person("Vasyl","Pihur", role=c("ctb")),person("Guy","Brock", role=c("ctb")),person("Susmita","Datta", role=c("ctb")),person("Somnath","Datta", role=c("ctb")),person("Luis","Winckelmann", role=c("com")),person("Alfred", "Ultsch",role=c("dtc","ctb")))
+Version: 1.2.4
+Date: 2020-09-06
+Authors@R: c(person("Michael", "Thrun", email= "m.thrun@gmx.net",role=c("aut","cre","cph"), comment = c(ORCID = "0000-0001-9542-5543")),person("Peter", "Nahrgang",role=c("ctr","ctb")),person("Felix", "Pape",role=c("ctr","ctb")),person("Vasyl","Pihur", role=c("ctb")),person("Guy","Brock", role=c("ctb")),person("Susmita","Datta", role=c("ctb")),person("Somnath","Datta", role=c("ctb")),person("Luis","Winckelmann", role=c("com")),person("Alfred", "Ultsch",role=c("dtc","ctb")),person("Quirin", "Stier",role=c("ctb","rev")))
 Maintainer: Michael Thrun <m.thrun@gmx.net>
 Description: Many conventional clustering algorithms are provided in this package with consistent input and output, which enables the user to try out algorithms swiftly. Additionally, 26 statistical approaches for the estimation of the number of clusters as well as the the mirrored density plot (MD-plot) of clusterability are implemented. Moreover, the fundamental clustering problems suite (FCPS) offers a variety of clustering challenges any algorithm should handle when facing real world data, see Thrun, M.C., Ultsch A.: "Clustering Benchmark Datasets Exploiting the Fundamental Clustering Problems" (2020), Data in Brief, <DOI:10.1016/j.dib.2020.105501>.
 Imports: mclust, ggplot2, DataVisualizations
@@ -24,9 +24,8 @@ BugReports: https://github.com/Mthrun/FCPS/issues
 Encoding: UTF-8
 VignetteBuilder: knitr
 NeedsCompilation: no
-Packaged: 2020-06-26 11:49:13 UTC; MT
+Packaged: 2020-09-07 07:30:25 UTC; MT
 Author: Michael Thrun [aut, cre, cph] (<https://orcid.org/0000-0001-9542-5543>),
-  Quirin Stier [ctb, rev],
   Peter Nahrgang [ctr, ctb],
   Felix Pape [ctr, ctb],
   Vasyl Pihur [ctb],
@@ -34,6 +33,7 @@ Author: Michael Thrun [aut, cre, cph] (<https://orcid.org/0000-0001-9542-5543>),
   Susmita Datta [ctb],
   Somnath Datta [ctb],
   Luis Winckelmann [com],
-  Alfred Ultsch [dtc, ctb]
+  Alfred Ultsch [dtc, ctb],
+  Quirin Stier [ctb, rev]
 Repository: CRAN
-Date/Publication: 2020-06-26 12:40:03 UTC
+Date/Publication: 2020-09-07 10:30:02 UTC
