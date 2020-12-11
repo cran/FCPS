@@ -1,4 +1,4 @@
-EntropyOfDataField=function(Data,sigmarange=c(0.01,0.1,0.5,1,2,5,8,10,100),PlotIt=TRUE){
+EntropyOfDataField=function(Data,sigmarange=c(0.01,0.1,0.5,1,2,5,8,10,100),PlotIt=FALSE){
   # EntropyOfDataField(Data, sigmarange = c(0.01, 0.1, 0.5, 1, 2, 5, 8, 10, 100), PlotIt = TRUE)
   # Entropy Of a Data Field [Wang et al., 2011].
   # Calculates the Potential Entropy Of a Data Field for a givven ranges of impact factors sigma
@@ -22,8 +22,11 @@ EntropyOfDataField=function(Data,sigmarange=c(0.01,0.1,0.5,1,2,5,8,10,100),PlotI
   #   
   # Author: Michael Thrun
   # 
-  
+  if(requireNamespace("parallelDist",quietly = TRUE)){
   DistanceFull=as.matrix((parallelDist::parDist(Data)))
+  }else{
+  DistanceFull=as.matrix((dist(Data)))
+  }
   H=c()
   k=1
 
@@ -51,13 +54,13 @@ EntropyOfDataField=function(Data,sigmarange=c(0.01,0.1,0.5,1,2,5,8,10,100),PlotI
     
   }
 
-  if(PlotIt){
+  if(isTRUE(PlotIt)){
     # defined in Wang et al 2011
     # plot(sigmarange,H,ylab='Potential Entropy H',
     #      xlab = 'Points of  Selected Impact Factor Sigma in black, Red: Upper Boundary of H',main='Entropy of Data Field')
     # abline(h = log(nrow(Data)),col='red')
     # 
-    requireNamespace('plotly')
+    if(requireNamespace('plotly',quietly = TRUE )){
     
     p <- plotly::plot_ly( x = ~sigmarange, y = ~H,type = "scatter",mode="markers")
     
@@ -76,6 +79,11 @@ EntropyOfDataField=function(Data,sigmarange=c(0.01,0.1,0.5,1,2,5,8,10,100),PlotI
                      yaxis=list(exponentformat = "E",  title = "Potential entropy H"),
                      showlegend = FALSE,shapes=line)
     print(p)
+    }else{
+      warning("plotly package is missing")
+      #todo plot lines?
+      plot(sigmarange,H,main = "Entropy of data field",xlab = "Points of selected impact factor sigma in black, Red: Upper boundary of H",ylab ="Potential entropy H" )
+    }
     
   }
   names(H)=sigmarange

@@ -1,4 +1,4 @@
-SharedNearestNeighborClustering <-function(Data,Knn=7,Radius,minPts,PlotIt=FALSE,UpperLimitRadius,...){
+SharedNearestNeighborClustering <-function(Data,Knn,Radius,minPts,PlotIt=FALSE,UpperLimitRadius,...){
   # Cls=SharedNearestNeighborClustering(FCPS$Hepta$Data,sqrt(min(res$withinss)))
   # DBscan nach [Ester et al., 1996]
   # 
@@ -22,15 +22,15 @@ SharedNearestNeighborClustering <-function(Data,Knn=7,Radius,minPts,PlotIt=FALSE
   # 
   # Author: MT 2019
   
-  if (!requireNamespace('dbscan')) {
+  if (!requireNamespace('dbscan',quietly = TRUE)) {
     message(
-      'Subordinate clustering package is missing. No computations are performed.
+      'Subordinate clustering package (dbscan) is missing. No computations are performed.
             Please install the package which is defined in "Suggests".'
     )
     return(
       list(
         Cls = rep(1, nrow(Data)),
-        Object = "Subordinate clustering package is missing.
+        Object = "Subordinate clustering package (dbscan) is missing.
                 Please install the package which is defined in 'Suggests'."
       )
     )
@@ -41,7 +41,7 @@ SharedNearestNeighborClustering <-function(Data,Knn=7,Radius,minPts,PlotIt=FALSE
   }
   
   if(is.null(Radius)){  
-    if(requireNamespace("DataVisualizations")){
+    if(requireNamespace("DataVisualizations",quietly = TRUE)){
       warning('The Radius (eps) parameter is missing but it is required in DBscan. Trying to estimate..')
       Radius=0.5*DataVisualizations::ParetoRadius(Data)
     }

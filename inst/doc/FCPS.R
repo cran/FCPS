@@ -6,6 +6,12 @@ knitr::opts_chunk$set(
   comment = "#>"
 )
 
+## ----echo = FALSE-------------------------------------------------------------
+if (!requireNamespace("rmarkdown") || !rmarkdown::pandoc_available("1.12.3")) {
+  warning("This vignette requires pandoc version 1.12.3; code will not run in older versions.")
+  knitr::opts_chunk$set(eval = FALSE)
+}
+
 ## ---- fig.show='hold',fig.width=5,fig.height=5--------------------------------
 library(FCPS)
 data("Leukemia")

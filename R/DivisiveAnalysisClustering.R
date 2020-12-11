@@ -1,4 +1,4 @@
-DivisiveAnalysisClustering <-function(DataOrDistances,ClusterNo,PlotIt=FALSE,Standardization=TRUE,Data,...){
+DivisiveAnalysisClustering <-function(DataOrDistances,ClusterNo,PlotIt=FALSE,Standardization=TRUE,PlotTree=FALSE,Data,...){
   # Cls=DivisiveAnalysisClustering(Data,ClusterNo=2)
   # DivisiveAnalysisClustering (diana)
   #
@@ -13,15 +13,15 @@ DivisiveAnalysisClustering <-function(DataOrDistances,ClusterNo,PlotIt=FALSE,Sta
   # dianaObject       Object of sota Alorithm
   # 
   # Author: MT 04/2018
-  if (!requireNamespace('cluster')) {
+  if (!requireNamespace('cluster',quietly = TRUE)) {
     message(
-      'Subordinate clustering package is missing. No computations are performed.
+      'Subordinate clustering package (cluster) is missing. No computations are performed.
             Please install the package which is defined in "Suggests".'
     )
     return(
       list(
         Cls = rep(1, nrow(DataOrDistances)),
-        Object = "Subordinate clustering package is missing.
+        Object = "Subordinate clustering package (cluster) is missing.
                 Please install the package which is defined in 'Suggests'."
       )
     )
@@ -44,6 +44,7 @@ DivisiveAnalysisClustering <-function(DataOrDistances,ClusterNo,PlotIt=FALSE,Sta
     }
 	
   res=cluster::diana(x=Input,diss =diss,stand=Standardization,...)
+  Dendrogram=as.dendrogram(as.hclust(res))
   if(length(ClusterNo)!=1){
     stop('ClusterNo has to be a numerical number not a vector of length higher than 1 or another object.')
   }
@@ -54,13 +55,15 @@ DivisiveAnalysisClustering <-function(DataOrDistances,ClusterNo,PlotIt=FALSE,Sta
 		ClusterPlotMDS(DataOrDistances,Cls)
     }
   }
+  if(isTRUE(PlotTree))
+    ClusterDendrogram(Dendrogram,ClusterNo = ClusterNo,main='DIANA')
+  
   if(ClusterNo<=0){
     Cls=NULL
-    plot(res)
     if(ClusterNo<0){
       warning(('ClusterNo cannot be a negativ number'))
     }
   }
     Cls=ClusterRename(Cls,DataOrDistances)
-  return(list(Cls=Cls,Dendrogram=as.dendrogram(as.hclust(res)),Object=res))
+  return(list(Cls=Cls,Dendrogram=Dendrogram,Object=res))
 }

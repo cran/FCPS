@@ -1,4 +1,4 @@
-MoGclustering <-function(Data,ClusterNo=2,method="EM",PlotIt=FALSE,...){
+MoGclustering <-function(Data,ClusterNo=2,Type="EM",PlotIt=FALSE,...){
   # Cls <- MoGclustering(Data,ClusterNo);
   # MixtureOfGaussians (MoG) clustering using EM
   # 
@@ -7,7 +7,7 @@ MoGclustering <-function(Data,ClusterNo=2,method="EM",PlotIt=FALSE,...){
   # ClusterNo         Number of clusters to search for
   #
   # OPTIONAL
-  # method            Choose Method. EM = Expectation Maximization
+  # Type            Choose Method. EM = Expectation Maximization
   # PlotIt            Boolean. Decision to plot or not
   # 
   # OUTPUT
@@ -17,15 +17,15 @@ MoGclustering <-function(Data,ClusterNo=2,method="EM",PlotIt=FALSE,...){
   # MT 2017
   # IMPORTANT UPDATE: MoGclustering renamed to ModelBasedClustering MoG Clustering is now defined es Mixture of Gaussians based on EM This is a change contrary to my PhD thesis [Thrun, 2018]! Additionally density based clustering methods added.
   #
-  if (!requireNamespace('EMCluster')) {
+  if (!requireNamespace('EMCluster',quietly = TRUE)) {
     message(
-      'Subordinate clustering package is missing. No computations are performed.
+      'Subordinate clustering package (EMCluster) is missing. No computations are performed.
             Please install the package which is defined in "Suggests".'
     )
     return(
       list(
         Cls = rep(1, nrow(Data)),
-        Object = "Subordinate clustering package is missing.
+        Object = "Subordinate clustering package (EMCluster) is missing.
                 Please install the package which is defined in 'Suggests'."
       )
     )
@@ -40,7 +40,7 @@ MoGclustering <-function(Data,ClusterNo=2,method="EM",PlotIt=FALSE,...){
     }
   }#
 
-  switch(method,
+  switch(Type,
     EM={
       out=EMCluster::starts.via.svd(Data, nclass = ClusterNo, method = c("em"),
                                     EMC = EMCluster::.EMC)

@@ -15,100 +15,121 @@ AutomaticProjectionBasedClustering=function(DataOrDistances,ClusterNo,Type="NerV
   #
   # Author: MT, 04/2020
   
-  if (!requireNamespace('ProjectionBasedClustering')) {
+  if (!requireNamespace('ProjectionBasedClustering',quietly = TRUE)) {
     message(
-      'Subordinate clustering package is missing. No computations are performed.
+      'Subordinate clustering package (ProjectionBasedClustering) is missing. No computations are performed.
             Please install the package which is defined in "Suggests".'
     )
     return(
       list(
         Cls = rep(1, nrow(DataOrDistances)),
-        Object = "Subordinate clustering package is missing.
+        Object = "Subordinate clustering package (ProjectionBasedClustering) is missing.
                 Please install the package which is defined in 'Suggests'."
       )
     )
   }
   
   if(isSymmetric(unname(DataOrDistances))){
-    Type %in% c('Sammon','Pswarm','MDS')
-    if(!(Type %in% c('Sammon','Pswarm','MDS'))){
+    #Type %in% c('Sammon','Pswarm','MDS')
+    if((Type %in% c('NerV'))){
+    #if(!(Type %in% c('Sammon','Pswarm','MDS'))){
       Type='MDS'
       warning('Distances matrix is given but the type',Type,'is selected, which does not work with distances. Switching to MDS.')
     }
    
-    message('Given a distance matrix instead of data is experimental. MDS transformation is used to generate a data matrix.')
-    Data=ProjectionBasedClustering::MDS(DataOrDists = DataOrDistances,OutputDimension = dim(DataOrDistances)[1]-2)$ProjectedPoints
+    if(isTRUE(PlotMap)){
+      message('Given a distance matrix instead of data is experimental. MDS transformation is used to generate a data matrix.')
+    
+      Data=ProjectionBasedClustering::MDS(DataOrDistances = DataOrDistances,OutputDimension = dim(DataOrDistances)[1]-2)$ProjectedPoints
+    }
     
   }else{
-    Data=DataOrDistances
+    #if(isTRUE(PlotMap))
+      Data=DataOrDistances#for plotting
   }
-
+  n=dim(DataOrDistances)[1]
     switch(Type,
       'NerV'={
         out=list()
-        out$ProjectedPoints=ProjectionBasedClustering::NeRV(Data = DataOrDistances,OutputDimension = 2,...)
+        out$ProjectedPoints=ProjectionBasedClustering::NeRV(Data = Data,OutputDimension = 2,PlotIt = FALSE,...)
         },
       'Pswarm'={
-        if(requireNamespace('DatabionicSwarm')){
-          out=DatabionicSwarm::Pswarm(DataOrDistance = DataOrDistances,...)
-        }else{
-          warning('DatabionicSwarm is not installed.')
-          return('DatabionicSwarm is not installed.')
-        }
-         
+          out=ProjectionBasedClustering::PolarSwarm(DataOrDistances = DataOrDistances,PlotIt = FALSE,...)
         },
-      'MDS'={out=ProjectionBasedClustering::MDS(DataOrDists = DataOrDistances,OutputDimension = 2,...)
+      'MDS'={out=ProjectionBasedClustering::MDS(DataOrDistances = DataOrDistances,OutputDimension = 2,PlotIt = FALSE,...)
       
       },
       'CCA'={
-        out=ProjectionBasedClustering::CCA(DataOrDists = DataOrDistances,OutputDimension = 2,...)
+        out=ProjectionBasedClustering::CCA(DataOrDistances = DataOrDistances,OutputDimension = 2,PlotIt = FALSE,...)
       },
       'Sammon'={
-        out=ProjectionBasedClustering::SammonsMapping(DataOrDists = DataOrDistances,OutputDimension = 2,...)
+        out=ProjectionBasedClustering::SammonsMapping(DataOrDistances = DataOrDistances,OutputDimension = 2,PlotIt = FALSE,...)
       },
-      'ICA'={
-        out=ProjectionBasedClustering::ICA(Data = DataOrDistances,OutputDimension = 2,...)
+      't-SNE'={
+        out=ProjectionBasedClustering::tSNE(DataOrDistances = DataOrDistances,OutputDimension = 2,PlotIt = FALSE,...)
+      },
+      'Uwot'={
+        out=ProjectionBasedClustering::UniformManifoldApproximationProjection(DataOrDistances = DataOrDistances,OutputDimension = 2,PlotIt = FALSE,...)
       },{
         warning('Incorrect type selected')
         return('Incorrect type selected')
       }
     )
   #  out=out
-
+  out$Type=Type
+#ToDo, vorgang abschalten, da fuer clusterung unnoetig----
   # Computation of GeneralizedUmatrix
-  if(Type!='Pswarm')
-    if(requireNamespace("GeneralizedUmatrix")){
-      visualization=GeneralizedUmatrix::GeneralizedUmatrix(Data = Data,out$ProjectedPoints,PlotIt = FALSE)
-    }
-    else{
-      stop('GeneralizedUmatrix package not loaded or installed.')
-    }
-  else{
-    if(requireNamespace("DatabionicSwarm")){
-      # Visualization of GenerelizedUmatrix
-      visualization=DatabionicSwarm::GeneratePswarmVisualization(Data = Data,out$ProjectedPoints,out$LC,PlotIt = FALSE)
-    }
-    else{
-      stop('DatabionicSwarm package not loaded or installed.')
-    }
-  }
+  if (n > 4096/8) 
+    minNeurons = n * 8
+  else minNeurons = 4096
+  
+  visualization="PlotMap=TRUEE computes the GeneralizedUmatrix"
+  
+  coordsres = GeneralizedUmatrix::XYcoords2LinesColumns(X = out$ProjectedPoints[, 1], 
+                                    Y = out$ProjectedPoints[, 2], PlotIt = F, minNeurons = minNeurons)
+  LC = coordsres$LC
+  Bestmatches = coordsres$GridConvertedPoints
+  
+
 
   # Automatic Clustering
   if(Type!='Pswarm'){
-    LC=c(visualization$Lines,visualization$Columns)
     # Number of cluster from dendrogram or visualization (PlotIt=T)
-    Cls=ProjectionBasedClustering::ProjectionBasedClustering(k=ClusterNo, Data = Data, BestMatches = visualization$Bestmatches, LC,StructureType = StructureType,PlotIt=PlotTree)
+    Cls=ProjectionBasedClustering::ProjectionBasedClustering(k=ClusterNo, DataOrDistances, BestMatches = Bestmatches, LC = LC,StructureType = StructureType,PlotIt=PlotTree)
   }else{
-    Cls=DatabionicSwarm::DBSclustering(k = ClusterNo,DataOrDistance = DataOrDistances,BestMatches = visualization$Bestmatches,LC = visualization$LC,StructureType = StructureType,PlotIt = PlotTree)
+    if(requireNamespace('DatabionicSwarm',quietly = TRUE)){
+      Cls=DatabionicSwarm::DBSclustering(k = ClusterNo,DataOrDistance = DataOrDistances,BestMatches = Bestmatches,LC = LC,StructureType = StructureType,PlotIt = PlotTree)
+    }else{
+      warning('DatabionicSwarm package is not installed.')
+      return('DatabionicSwarm package is not installed.')
+    }
   }
   # Verification
   if(isTRUE(PlotMap)){
-	if(requireNamespace('GeneralizedUmatrix'))
-		GeneralizedUmatrix::plotTopographicMap(visualization$Umatrix,visualization$Bestmatches,Cls)
+	if(requireNamespace('GeneralizedUmatrix',quietly = TRUE)){
+	  if(Type!='Pswarm')
+	    if(requireNamespace("GeneralizedUmatrix",quietly = TRUE)){
+	      visualization=GeneralizedUmatrix::GeneralizedUmatrix(Data = Data,out$ProjectedPoints,PlotIt = FALSE)
+	    }
+	  else{
+	    stop('GeneralizedUmatrix package not loaded or installed.')
+	  }
+	  else{
+	    if(requireNamespace("DatabionicSwarm",quietly = TRUE)){
+	      # Visualization of GenerelizedUmatrix
+	      visualization=DatabionicSwarm::GeneratePswarmVisualization(Data = Data,out$ProjectedPoints,out$LC,PlotIt = FALSE)
+	    }
+	    else{
+	      stop('DatabionicSwarm package not loaded or installed.')
+	    }
+	  }
+	  GeneralizedUmatrix::plotTopographicMap(visualization$Umatrix,visualization$Bestmatches,Cls)
+	}
+	
   }
   if(isTRUE(PlotIt)){
-    ClusterPlotMDS(Data,Cls)
+    ClusterPlotMDS(DataOrDistances,Cls)
   }
   Cls=ClusterRename(Cls,DataOrDistances)
-    return(list(Cls=Cls,Object=list(Projection=out,GeneralizedUmatrix=visualization)))
+    return(list(Cls=Cls,Object=list(Projection=out,Bestmatches=coordsres,GeneralizedUmatrix=visualization)))
   }
