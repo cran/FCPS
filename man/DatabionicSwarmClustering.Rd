@@ -6,7 +6,7 @@
 Databionic Swarm (DBS) Clustering and Visualization
 }
 \description{
-Swarm-based clustering by exploting self-organization, emergence, swarm intelligence and game theory.
+Swarm-based clustering by exploting self-organization, emergence, swarm intelligence and game theory published in [Thrun/Ultsch, 2021].
 }
 \usage{
 DatabionicSwarmClustering(DataOrDistances, ClusterNo = 0,
@@ -38,7 +38,7 @@ Optional, if data matrix given, annon Euclidean distance can be selected
 Optional, if TRUE: dendrogram is plotted.
 }
   \item{PlotMap}{
-Optional, if TRUE: topographic map is plotted.
+Optional, if TRUE: topographic map is plotted if \pkg{GeneralizedUmatrix} is installed.
 }
 \item{PlotIt}{Default: FALSE, If TRUE and dataset of [1:n,1:d] dimensions then a plot of the first three dimensions of the dataset with colored three-dimensional data points defined by the clustering stored in \code{Cls} will be generated.}
 
@@ -59,7 +59,9 @@ List of
 \item{Object}{List of further output of DBS}
 }
 \references{
-[Thrun/Ultsch, 2020]  Thrun, M. C., & Ultsch, A.: Swarm Intelligence for Self-Organized Clustering, Journal of Artificial Intelligence, Vol. in press, pp. doi 10.1016/j.artint.2020.103237, 2020.
+[Thrun/Ultsch, 2021]  Thrun, M. C., and Ultsch, A.: Swarm Intelligence for Self-Organized Clustering, Artificial Intelligence, Vol. 290, pp. 103237, \doi{10.1016/j.artint.2020.103237}, 2021.
+
+[Thrun/Ultsch, 2021] Thrun, M. C., & Ultsch, A.: Swarm Intelligence for Self-Organized Clustering (Extended Abstract), in Bessiere, C. (Ed.), 29th International Joint Conference on Artificial Intelligence (IJCAI), Vol. IJCAI-20, pp. 5125--5129, \doi{10.24963/ijcai.2020/720}, Yokohama, Japan, Jan., 2021. 
 }
 \author{
 Michael Thrun
@@ -81,6 +83,7 @@ data = cbind(
 )
 # Make sure there are no structures
 # (sample size is small and still could generate structures randomly)
+if(requireNamespace('DatabionicSwarm',quietly = TRUE)){
 Data = DatabionicSwarm::RobustNormalization(data, Centered = TRUE)
 #DataVisualizations::Plot3D(Data)
 
@@ -88,6 +91,12 @@ Data = DatabionicSwarm::RobustNormalization(data, Centered = TRUE)
 # Topographic map looks like "egg carton"
 # with every point in its own valley
 Cls = DatabionicSwarmClustering(Data, 0, PlotMap = TRUE)
+}else{
+# only for testing purposes of CRAN!
+# in case CRAN tests with no suggest packages available
+# please use alpways some kind of standardization!
+Cls = DatabionicSwarmClustering(data, 0, PlotMap = TRUE)
+}
 }
 
 # Distance based cluster structures
@@ -100,7 +109,8 @@ Cls = DatabionicSwarmClustering(Hepta$Data, 0, PlotMap = TRUE)
 }
 
 #entagled, complex, and non-linear seperable structures 
-\donttest{
+\dontrun{
+#takes too long for CRAN tests
 data(Chainlink)
 #DataVisualizations::Plot3D(Chainlink$Data)
 

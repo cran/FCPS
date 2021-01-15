@@ -7,7 +7,7 @@ Estimates Number of Clusters using up to 26 Indicators
 Calculation of up to 26 indicators and the recommendations based on them for the number of clusters in data sets. 
 For a given dataset and clusterings for this dataset, key indicators mentioned in details are calculated and based on this a recommendation regarding the number of classes is given for each indicator.
 
-An alternative estimation of the cluster number can be done by counting the valleys of the topographic map of the generalized U-Matrix for a specfic projection method using the \pkg{ProjectionBasesdClustering} and \pkg{GeneralizedUmatrix} packages on CRAN, see [Thrun/Ultsch, 2020] for details.
+An alternative estimation of the cluster number can be done by counting the valleys of the topographic map of the generalized U-Matrix for a specfic projection method using the \pkg{ProjectionBasesdClustering} and \pkg{GeneralizedUmatrix} packages on CRAN, see [Thrun/Ultsch, 2021] for details.
 }
 \usage{
 ClusterNoEstimation(DataOrDistances, ClsMatrix = NULL, max.nc, 
@@ -26,7 +26,11 @@ PlotIt=FALSE,SelectByABC=TRUE,Colorsequence)
 Symmetric [1:n,1:n] distance matrix
   }
   \item{ClsMatrix}{
-[1:n,1:(max.nc)] Clustering of the number of classes to be checked as a matrix with one cluster per column (see also details (2) and (3)), must be specified if method = NULL
+[1:n,1:(max.nc)] matrix of clusterings each columns is defined as: 
+
+1:n numerical vector of numbers defining the classification as the main output of the clustering algorithm for the n cases of data. It has k unique numbers representing the arbitrary labels of the clustering.
+
+(see also details (2) and (3)), must be specified if method = NULL
   }
   \item{max.nc}{
     Highest number of classes to be checked
@@ -108,7 +112,7 @@ Charrad, Malika, et al. "Package 'NbClust', J. Stat. Soft Vol.  61, pp. 1-36, 20
 
 Dimtriadou, E. "cclust: Convex Clustering Methods and Clustering Indexes." R package version 0.6-16, URL \url{https://CRAN.R-project.org/package=cclust}, 2009.
 
-[Thrun/Ultsch, 2020]  Thrun, M. C., and Ultsch, A.: Swarm Intelligence for Self-Organized Clustering, Artificial Intelligence, in press, \url{https://doi.org/10.1016/j.artint.2020.103237}, 2020.
+[Thrun/Ultsch, 2021]  Thrun, M. C., and Ultsch, A.: Swarm Intelligence for Self-Organized Clustering, Artificial Intelligence, Vol. 290, pp. 103237, \doi{10.1016/j.artint.2020.103237}, 2021.
 
 }
 \author{
@@ -124,17 +128,21 @@ Colorsequence works if \pkg{DataVisualizations} 1.1.13 is installed (currently o
 \examples{
 # Reading the iris dataset from the standard R-Package datasets
 data <- as.matrix(iris[,1:4])
-
+max.nc = 7
 # Creating the clusterings for the data set
 #(here with method complete) for the number of classes 2 to 8
 hc <- hclust(dist(data), method = "complete")
-clsm <- matrix(data = 0, nrow = dim(data)[1],  ncol = 7)
-for (i in 2:8) {
+clsm <- matrix(data = 0, nrow = dim(data)[1],
+
+ncol = max.nc)
+for (i in 2:(max.nc+1)) {
   clsm[,i-1] <- cutree(hc,i)
 }
 
 # Calculation of all indicators and recommendations for the number of classes
-indicatorsList=ClusterNoEstimation(Data = data, ClsMatrix = clsm, max.nc = 7)
+indicatorsList=ClusterNoEstimation(Data = data, 
+
+ClsMatrix = clsm, max.nc = max.nc)
 
 # Alternatively, the same calculation as above can be executed with the following call
 ClusterNoEstimation(Data = data, max.nc = 7, method = "complete")
