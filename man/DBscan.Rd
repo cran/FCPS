@@ -78,7 +78,7 @@ for (i in seq_len(nrow(DBSGrid))) {
     UpperLimitRadius = parameters$Radius
   )$Cls
   if (length(unique(Cls9)) < 5)
-    BestAcc[i] = DatabionicSwarm::ClusteringAccuracy(WingNut$Cls,
+    BestAcc[i] = ClusterAccuracy(WingNut$Cls,
                                     
                                     Cls9) * 100
   else

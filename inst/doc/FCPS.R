@@ -12,14 +12,14 @@ if (!requireNamespace("rmarkdown") || !rmarkdown::pandoc_available("1.12.3")) {
   knitr::opts_chunk$set(eval = FALSE)
 }
 
-## ---- fig.show='hold',fig.width=5,fig.height=5--------------------------------
+## ----fig.show='hold',fig.width=5,fig.height=5---------------------------------
 library(FCPS)
 data("Leukemia")
 Data=Leukemia$Distance
 Cls=Leukemia$Cls
 ClusterPlotMDS(Data,Cls,main = 'Leukemia',Plotter3D = 'plotly')
 
-## ---- fig.show='hold',fig.width=5,fig.height=5--------------------------------
+## ----fig.show='hold',fig.width=5,fig.height=5---------------------------------
 library(FCPS)
 data('Leukemia')
 set.seed(123)
@@ -28,7 +28,7 @@ CA=AgglomerativeNestingClustering(Leukemia$DistanceMatrix,ClusterNo)
 Cls=ClusterRenameDescendingSize(CA$Cls)
 sum(match(names(Cls),rownames(Leukemia$DistanceMatrix),nomatch = 0)==0)
 
-## ---- fig.show='hold',fig.width=5,fig.height=5--------------------------------
+## ----fig.show='hold',fig.width=5,fig.height=5---------------------------------
 set.seed(600)
 library(FCPS)
 DataList=ClusterChallenge("Chainlink",SampleSize = 750)
@@ -37,7 +37,7 @@ Cls=DataList$Cls
 ClusterPlotMDS(Data,Cls,Plotter3D = 'plotly',main = "Chainlink")
 ClusterCount(Cls)
 
-## ---- fig.show='hold',fig.width=4,fig.height=4--------------------------------
+## ----fig.show='hold',fig.width=4,fig.height=4---------------------------------
 set.seed(600)
 library(FCPS)
 DataList=ClusterChallenge("Chainlink",SampleSize = 750)
@@ -46,7 +46,7 @@ Cls=DataList$Cls
 library(ggplot2)
 ClusterabilityMDplot(Data)+theme_bw()
 
-## ---- fig.show='hold',fig.width=7,fig.height=5--------------------------------
+## ----fig.show='hold',fig.width=7,fig.height=5---------------------------------
 library(FCPS)
 set.seed(135)
 DataList=ClusterChallenge("Chainlink",SampleSize = 900)
@@ -61,7 +61,7 @@ for (i in 2:(MaximumNunber+1)) {
 }
 out=ClusterNoEstimation(Data,ClsMatrix = clsm, MaxClusterNo = MaximumNunber,PlotIt = TRUE)
 
-## ---- fig.show='hold'---------------------------------------------------------
+## ----fig.show='hold'----------------------------------------------------------
 library(FCPS)
 data("Leukemia")
 Distance=Leukemia$DistanceMatrix
@@ -79,7 +79,7 @@ sum(diag(cm)) / sum(cm)
 ClusterAccuracy(Cls,Classification)
 cm
 
-## ---- fig.show='hold'---------------------------------------------------------
+## ----fig.show='hold'----------------------------------------------------------
 library(datasets)
 library(FCPS)
 Iris=datasets::iris
@@ -90,7 +90,7 @@ Cls=V$Cls
 V$ClusterNames
 ClusterApply(Data,mean,Cls)
 
-## ---- fig.show='hold'---------------------------------------------------------
+## ----fig.show='hold'----------------------------------------------------------
 suppressPackageStartupMessages(library('prabclus',quietly = TRUE))
 data(tetragonula)
 #Generated Specific Distance Matrix

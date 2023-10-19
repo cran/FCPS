@@ -147,9 +147,12 @@ DatabionicSwarmClustering=function(DataOrDistances,ClusterNo=0,StructureType=TRU
       GeneralizedUmatrix = generalizedUmatrix$Umatrix
       BestMatchingUnits = generalizedUmatrix$Bestmatches
       if (requireNamespace('GeneralizedUmatrix', quietly = TRUE)) {
-        GeneralizedUmatrix::plotTopographicMap(GeneralizedUmatrix = GeneralizedUmatrix,
-                                               BestMatchingUnits = BestMatchingUnits,
-                                               Cls = Cls)
+        message("Operator: Generating topview of topographic map of high-dimensional structures.")
+        out=GeneralizedUmatrix::TopviewTopographicMap(GeneralizedUmatrix = generalizedUmatrix$Umatrix,BestMatchingUnits = generalizedUmatrix$Bestmatches,Cls=Cls)
+        print(out)
+        # GeneralizedUmatrix::plotTopographicMap(GeneralizedUmatrix = GeneralizedUmatrix,
+        #                                        BestMatchingUnits = BestMatchingUnits,
+        #                                        Cls = Cls)
       }else{
         message(
           'Subordinate clustering package (GeneralizedUmatrix) is missing. No computations are performed.
