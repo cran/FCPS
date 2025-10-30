@@ -2,20 +2,13 @@
 \alias{DatabionicSwarmClustering}
 \alias{DBSclusteringAndVisualization}
 %- Also NEED an '\alias' for EACH other topic documented here.
-\title{
-Databionic Swarm (DBS) Clustering and Visualization
-}
+\title{Databionic Swarm (DBS) Clustering and Visualization}
 \description{
 Swarm-based clustering by exploting self-organization, emergence, swarm intelligence and game theory published in [Thrun/Ultsch, 2021].
 }
-\usage{
-DatabionicSwarmClustering(DataOrDistances, ClusterNo = 0,
-
+\usage{DatabionicSwarmClustering(DataOrDistances, ClusterNo = 0,
 StructureType = TRUE, DistancesMethod = NULL,
-
-PlotTree = FALSE, PlotMap = FALSE,PlotIt=FALSE, 
-
-Parallel = FALSE)
+PlotTree = FALSE, PlotMap = FALSE,PlotIt=FALSE, Parallel = FALSE)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{

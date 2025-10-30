@@ -54,7 +54,7 @@ value of adjusted rand index
 [Wagner and Wagner, 2007]	Wagner, Silke; Wagner, Dorothea. Comparing clusterings: an overview. Karlsruhe: Universitaet Karlsruhe, Fakultaet für Informatik, 2007.
 }
 \author{
-Michael Thrun
+Michael Thrun (Wrapper only)
 }
 
 \seealso{
