@@ -1,7 +1,6 @@
 # Export
 #
 # Clustering algorithms
-export(ADPclustering)
 export(AgglomerativeNestingClustering)
 export(APclustering)
 export(AutomaticProjectionBasedClustering)

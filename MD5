@@ -1,6 +1,5 @@
-1d0f56df81f07d816cb61e72ab8d5c41 *DESCRIPTION
-4a3c771301296dd3a043f208994856cb *NAMESPACE
-5748626e78705ee95cc035f3529d26ab *R/ADPclustering.R
+4d4eb99b9f2f6c3a8a3583d1a7cd38ff *DESCRIPTION
+1b340c5480a16e7ef6a3432f8de7fb9a *NAMESPACE
 8220deb10adabc9028e4970f239530f5 *R/APclustering.R
 6ce2c401ceb6ccab4cc559a3f7999941 *R/AgglomerativeNestingClustering.R
 ef7c62bea33fcbb6fbde8c89f76410c6 *R/AutomaticProjectionBasedClustering.R
@@ -74,8 +73,8 @@ c0c4a9ad137592032c531dc03b6c99d9 *R/kmeansClustering.R
 c0096671cae4b23b49c58a843a3fb773 *R/kmeansDist.R
 d4e6102325bda5688f93857307833f7d *R/pdfClustering.R
 3fe929d5666bdf38bba5b25b7971bbcf *README.md
-0e8844003f4c4c427d31c729bbf42fd6 *build/partial.rdb
-2fd04db47aa2451b81df465437c60b47 *build/vignette.rds
+078ebd3c6196d5f1c25b91031c223471 *build/partial.rdb
+ec4c62f75d75ac15dbd62d80172f7a30 *build/vignette.rds
 c5f142b3ee22981343957087a5206bd6 *data/Atom.rda
 0fb9c18352ccff4a4940e6a31264cdea *data/Chainlink.rda
 ad6e93bed3762a0cf1e12eb8292794aa *data/EngyTime.rda
@@ -88,10 +87,9 @@ b4eb411b9a96ffac10a0951c439fded5 *data/Lsun3D.rda
 9327110986e799b0877f2fc74d097023 *data/TwoDiamonds.rda
 20291e8ddb066ed9d3a64a3a93aa7b6c *data/WingNut.rda
 3828405d7f484eaeaa0a86ec14f078c9 *inst/CITATION
-bfdfa52b8b5b07fef03a21dbe8a3daec *inst/doc/FCPS.R
+e457548072747b779c277d8e625cc03c *inst/doc/FCPS.R
 d9d8cf04b5105742e06683d5f4ba35fd *inst/doc/FCPS.Rmd
-3bc6e933869a633973818d89870fc159 *inst/doc/FCPS.html
-b9781a760eb2fcb4c257258f6c37e1ae *man/ADPclustering.Rd
+fc31fc04de1f7c607a3254cf3cb576cc *inst/doc/FCPS.html
 00088e98df652eecc0c2fc08093d9d0d *man/APclustering.Rd
 cde9752d704f3ae3402f635b13aab78d *man/AgglomerativeNestingClustering.Rd
 1af998d0b2387017de8ae0483343f51b *man/Atom.Rd
@@ -124,7 +122,7 @@ dd2244f92e51cf256cfcc2cbb0ef1bde *man/ClusterabilityMDplot.Rd
 8b465ec1299d4a32fdf8f65e98f6c049 *man/CrossEntropyClustering.Rd
 6d657d9bfdc017603bd8dcf60875ce97 *man/DBSCAN.Rd
 649ebbd4282ebab4b4b3f3b0cafb6d5a *man/DatabionicSwarmClustering.Rd
-005d1f55fd45b756c42dc14a54d407e6 *man/DensityPeakClustering.Rd
+49488f6b3e1eab4ad41bbb9763dd0c28 *man/DensityPeakClustering.Rd
 e366c7f854085567be3e83071870ee41 *man/DivisiveAnalysisClustering.Rd
 0e9baeefca326f93548ae6765d73f213 *man/EngyTime.Rd
 3da9b278b4a6c7fddf96eac4c8d806a7 *man/EntropyOfDataField.Rd
