@@ -2,9 +2,10 @@
 #
 # Clustering algorithms
 export(AgglomerativeNestingClustering)
+#export(ADPclustering)#not on cran anymore
 export(APclustering)
 export(AutomaticProjectionBasedClustering)
-#export(ConsensusClustering) #doku is corrupted at the moment
+export(ConsensusClustering)
 export(CrossEntropyClustering)
 export(DatabionicSwarmClustering)
 export(DBSCAN)
@@ -31,7 +32,8 @@ export(NetworkClustering)
 export(OPTICSclustering)
 export(PAMclustering)
 export(pdfClustering)
-export(PenalizedRegressionBasedClustering)
+#export(PenalizedRegressionBasedClustering) #not on cran anymore
+export(PFclustering)
 export(ProjectionPursuitClustering)
 export(QTclustering)
 #export(RandomForestClustering)
@@ -75,6 +77,11 @@ export(ClusterUpsamplingMinority)
 export(EntropyOfDataField)
 export(EstimateRadiusByDistance)
 export(GapStatistic)
+#Benchmarkign Functions
+export(parApplyDataBasedCA)
+export(parApplyClusterAnalysis)
+export(parApplyDistanceBasedCA)
+
 #some ggplot unresolved issue requires this
 export(StatPDEdensity)
 #
